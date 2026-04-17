@@ -1,5 +1,5 @@
 {
-  "name": "cabine-du-cap-functions",
+  "name": "loction-bibi-functions",
   "description": "Firebase Cloud Functions for La Cabine du Cap d'Agde",
   "scripts": {
     "lint": "eslint .",
