@@ -24,6 +24,14 @@ jobs:
       - name: Install Functions Dependencies
         working-directory: functions
         run: npm ci
+      
+      - name: Create backend .env file
+        working-directory: functions
+        run: |
+          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" > .env
+          echo "STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}" >> .env
+          echo "ZODOMUS_API_KEY=${{ secrets.ZODOMUS_API_KEY }}" >> .env
+          echo "ZODOMUS_CHANNEL_ID=${{ secrets.ZODOMUS_CHANNEL_ID }}" >> .env
 
       - name: Build Frontend
         run: npm run build

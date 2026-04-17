@@ -49,7 +49,8 @@ self.addEventListener('install', event => {
   console.log('[SW] Installing…');
   event.waitUntil(
     caches.open(STATIC_CACHE)
-      .then(cache => cache.addAll(PRECACHE_ASSETS.map(url => {
+      // 👇 MODIFICATION ICI : On utilise Promise.all au lieu de cache.addAll
+      .then(cache => Promise.all(PRECACHE_ASSETS.map(url => {
         // Don't fail install if external resources are unavailable
         return cache.add(url).catch(err => console.warn('[SW] Pre-cache failed for', url, err));
       })))

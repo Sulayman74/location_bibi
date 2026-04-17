@@ -250,7 +250,7 @@ exports.cancelBooking = onRequest(
 // ==================== 4. GET AVAILABILITY ====================
 
 exports.getAvailability = onRequest(
-{region: 'europe-west1'},
+{cors:true,region: 'europe-west1'},
   async (req, res) => {
     res.set('Cache-Control', 'public, max-age=1800'); // 30 min cache
 
