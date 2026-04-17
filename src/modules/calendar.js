@@ -4,7 +4,8 @@
  * Rendu du calendrier interactif pour index.html et reservation.html
  */
 
-import { FUNCTIONS_BASE_URL, PROPERTY_CONFIG } from './firebase-config.js';
+import { FUNCTIONS_BASE_URL, PROPERTY_CONFIG, db } from './firebase-config.js';
+import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 
 // ==================== STATE ====================
 let bookedDates = new Set(); // ISO dates "YYYY-MM-DD"
@@ -28,6 +29,7 @@ const FR_MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin',
  */
 export async function fetchAvailability() {
   try {
+    if (!FUNCTIONS_BASE_URL) throw new Error('FUNCTIONS_BASE_URL not configured');
     const res = await fetch(`${FUNCTIONS_BASE_URL}/getAvailability`, {
       headers: { 'Accept': 'application/json' },
       signal: AbortSignal.timeout(5000),
@@ -42,7 +44,7 @@ export async function fetchAvailability() {
     }));
     return bookedDates;
   } catch (err) {
-    console.warn('[Calendar] Network fetch failed, using Firestore cache:', err);
+    console.warn('[Calendar] Network fetch failed, using Firestore fallback:', err.message);
     return fetchAvailabilityFromFirestore();
   }
 }
@@ -56,9 +58,6 @@ async function fetchAvailabilityFromFirestore() {
   }
 
   try {
-    const { db } = await initFirebase();
-    const { collection, getDocs, query, where, Timestamp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
-
     const now = Timestamp.now();
     const q = query(collection(db, 'reservations'),
       where('status', 'in', ['confirmed', 'pending']),
