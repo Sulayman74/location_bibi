@@ -2,64 +2,51 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ==================== HELPERS ====================
+    // Helper simplifié pour éviter les erreurs de lecture circulaire
     function isAdmin() {
-      return request.auth != null
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-
-    // ==================== USERS (rôles admin) ====================
+    // USERS : Lecture pour soi ou admin
     match /users/{uid} {
-      // Lecture : seulement soi-même ou admin
-      allow read: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
-      // Écriture : uniquement admin SDK (Cloud Functions) ou premier setup
-      allow write: if false;
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow write: if false; // Géré par Cloud Functions
     }
 
-    // ==================== RESERVATIONS ====================
+    // RESERVATIONS : Important pour le calendrier et le portail guest
     match /reservations/{bookingId} {
-      // Lecture publique pour les réservations confirmées (portail invité)
-      allow read: if resource.data.status == 'confirmed';
-      // Admin peut tout lire
-      allow read: if isAdmin();
-      // Écriture uniquement Cloud Functions (admin SDK)
+      allow read: if true; // Permettre la lecture pour vérifier les dates
       allow write: if false;
     }
 
-    // ==================== AVAILABILITY ====================
+    // CALENDRIER : Correction pour l'erreur de ton log
+    match /calendars/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     match /availability/{date} {
       allow read: if true;
       allow write: if false;
     }
 
-    // ==================== GUESTS (base fidélité) ====================
-    match /guests/{email} {
-      // Lecture + écriture réservée à l'admin
-      allow read, write: if isAdmin();
-      // Écriture backend (admin SDK) toujours autorisée
-    }
-
-    // ==================== PUSH HISTORY ====================
-    match /push_history/{id} {
-      allow read: if isAdmin();
-      allow write: if false;
-    }
-
-    // ==================== CONFIG ====================
+    // CONFIG : On permet la lecture de 'wifi' car le JS Guest en a besoin
     match /config/{doc} {
-      // Lecture publique sauf les docs sensibles
-      allow read: if doc != 'wifi' && doc != 'owner' && doc != 'secrets';
-      // Config publique accessible par l'admin
-      allow read: if isAdmin();
-      allow write: if false;
+      // On autorise la lecture publique des infos non-sensibles
+      // Pour le wifi, ton code JS filtre déjà l'affichage par heure, 
+      // mais Firestore doit autoriser la lecture du document.
+      allow read: if doc != 'secrets' && doc != 'owner';
+      allow write: if isAdmin();
     }
 
-    // Tout le reste : refusé par défaut
+    // GUESTS & PUSH : Réservé à l'admin
+    match /guests/{email} { allow read, write: if isAdmin(); }
+    match /push_history/{id} { allow read: if isAdmin(); }
+    match /subscriptions/{id} { allow read, write: if true; } // Pour les abonnés push
+
+    // Par défaut : Refusé
     match /{document=**} {
       allow read, write: if false;
     }

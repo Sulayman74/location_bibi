@@ -10,38 +10,53 @@ import { initPageTransitions } from './modules/transitions.js'
 import { initHeroSlider, initRecommendationSwipe } from './modules/swipe.js'
 
 async function init() {
+  // 1. Initialisation UI immédiate (Indépendant du réseau)
   initPageTransitions()
-  await registerServiceWorker()
-  initInstallPrompt()
   initNavbar()
+  initScrollAnimations()
 
-  document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
-    document.getElementById('mobile-menu')?.classList.toggle('hidden')
+  // Menu mobile : Doit être dispo tout de suite
+  const burgerBtn = document.getElementById('mobile-menu-btn')
+  const mobileMenu = document.getElementById('mobile-menu')
+  burgerBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden')
   })
 
   // Fermer le menu mobile sur un lien
   document.querySelectorAll('#mobile-menu a').forEach(a => {
-    a.addEventListener('click', () => document.getElementById('mobile-menu')?.classList.add('hidden'))
+    a.addEventListener('click', () => mobileMenu?.classList.add('hidden'))
   })
 
-  await fetchAvailability()
-  renderCalendar('calendar-grid', 'calendar-title')
-
-  document.getElementById('prev-month')?.addEventListener('click', () => prevMonth('calendar-grid', 'calendar-title'))
-  document.getElementById('next-month')?.addEventListener('click', () => nextMonth('calendar-grid', 'calendar-title'))
-
-  // Prochain dispo dans le hero
-  const next = getNextAvailableDate()
-  const el = document.getElementById('next-available')
-  if (el && next) {
-    el.textContent = next.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })
-  }
-
+  // 2. Initialisation des composants UI secondaires
   initRecommendationTabs('rec-tabs', 'rec-content')
   initRecommendationSwipe()
   renderReviews('reviews-grid')
   initHeroSlider()
-  initScrollAnimations()
+
+  // 3. Appels réseau (Asynchrones, ne doivent pas bloquer l'UI)
+  try {
+    registerServiceWorker() // Ne pas awaiter pour ne pas bloquer le reste
+    initInstallPrompt()
+  } catch (e) { console.warn('PWA init error:', e) }
+
+  try {
+    await fetchAvailability()
+    renderCalendar('calendar-grid', 'calendar-title')
+
+    document.getElementById('prev-month')?.addEventListener('click', () => prevMonth('calendar-grid', 'calendar-title'))
+    document.getElementById('next-month')?.addEventListener('click', () => nextMonth('calendar-grid', 'calendar-title'))
+
+    // Prochain dispo dans le hero
+    const next = getNextAvailableDate()
+    const el = document.getElementById('next-available')
+    if (el && next) {
+      el.textContent = next.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })
+    }
+  } catch (err) {
+    console.error('[Main] Calendar/Availability error:', err)
+    // Fallback: render calendar even without fetch
+    renderCalendar('calendar-grid', 'calendar-title')
+  }
 }
 
 function initNavbar() {

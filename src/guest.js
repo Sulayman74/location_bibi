@@ -19,8 +19,11 @@ import { initPageTransitions } from './modules/transitions.js'
 import { initTabSwipe } from './modules/swipe.js'
 
 function navigateToTab(tabId) {
+  const panel = document.getElementById(tabId)
+  if (!panel) return
+
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
-  document.getElementById(tabId)?.classList.add('active')
+  panel.classList.add('active')
   
   document.querySelectorAll('[data-tab-target]').forEach(t => {
     const isActive = t.dataset.tabTarget === tabId
@@ -39,15 +42,17 @@ function navigateToTab(tabId) {
 }
 
 async function init() {
+  // 1. Initialisation UI immédiate
   initPageTransitions()
-  await registerServiceWorker()
-  await initForegroundMessaging()
-
   initTabs()
   initTabSwipe('#guest-content', '[data-tab-target]', navigateToTab)
   renderGuestRecommendations('guest-recommendations')
 
-  // Résolution de la réservation
+  // 2. PWA init (non-blocking)
+  registerServiceWorker().catch(e => console.warn('SW init error:', e))
+  initForegroundMessaging().catch(e => console.warn('Messaging init error:', e))
+
+  // 3. Résolution de la réservation
   const params     = new URLSearchParams(window.location.search)
   const fromUrl    = params.get('booking')
   const fromCache  = localStorage.getItem('villa_active_booking')
@@ -55,8 +60,10 @@ async function init() {
 
   let booking = null
   if (bookingId) {
-    booking = await loadGuestBooking(bookingId)
-    if (booking) localStorage.setItem('villa_active_booking', booking.id)
+    try {
+      booking = await loadGuestBooking(bookingId)
+      if (booking) localStorage.setItem('villa_active_booking', booking.id)
+    } catch (err) { console.error('Booking fetch error:', err) }
   }
 
   if (booking) {
@@ -64,14 +71,16 @@ async function init() {
     document.getElementById('guest-content')?.classList.remove('hidden')
 
     renderStayInfo(booking)
-    await renderWifiSection(booking)
+    renderWifiSection(booking).catch(console.error)
     renderReviewSection(booking)
     smartReviewRequest(booking, PROPERTY_CONFIG.googlePlaceId)
     startCheckinCountdown(booking.checkIn)
 
     // QR code de partage
-    const shareUrl = `${window.location.origin}/guest.html?booking=${booking.id}`
-    generateQRCode('qr-container', shareUrl)
+    try {
+      const shareUrl = `${window.location.origin}/guest.html?booking=${booking.id}`
+      generateQRCode('qr-container', shareUrl)
+    } catch (e) { console.warn('QR code generation failed') }
 
     // Code boîte à clés
     const keyEl = document.getElementById('key-code')
@@ -118,12 +127,18 @@ function initCodeForm() {
     btn.textContent = 'Vérification…'
     errEl?.classList.add('hidden')
 
-    const booking = await loadGuestBookingByCode(code)
-    if (booking) {
-      localStorage.setItem('villa_active_booking', booking.id)
-      window.location.reload()
-    } else {
-      showErr('Code non trouvé. Vérifiez votre email de confirmation.')
+    try {
+      const booking = await loadGuestBookingByCode(code)
+      if (booking) {
+        localStorage.setItem('villa_active_booking', booking.id)
+        window.location.reload()
+      } else {
+        showErr('Code non trouvé. Vérifiez votre email de confirmation.')
+        btn.disabled = false
+        btn.textContent = 'Accéder à mon séjour'
+      }
+    } catch (e) {
+      showErr('Erreur de connexion.')
       btn.disabled = false
       btn.textContent = 'Accéder à mon séjour'
     }

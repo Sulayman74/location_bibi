@@ -87,7 +87,7 @@ exports.createPaymentIntent = onRequest(
       metadata: { ...metadata, bookingId, accessCode },
       receipt_email: metadata.guestEmail,
       description: `La Cabine du Cap d'Agde – ${metadata.checkIn} au ${metadata.checkOut}`,
-      statement_descriptor: 'VILLA OLIVIERS',
+      statement_descriptor: 'Cabine Studio',
     });
 
     res.json({ clientSecret: paymentIntent.client_secret, bookingId });

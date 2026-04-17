@@ -155,7 +155,7 @@ self.addEventListener('push', event => {
 
   let data;
   try { data = event.data.json(); }
-  catch { data = { title: 'La Cabine du Cap d'Agde', body: event.data.text() }; }
+  catch { data = { title: "La Cabine du Cap d'Agde", body: event.data.text() }; }
 
   const options = {
     body: data.body || '',
@@ -170,7 +170,7 @@ self.addEventListener('push', event => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title || 'La Cabine du Cap d'Agde', options)
+    self.registration.showNotification(data.title || "La Cabine du Cap d'Agde", options)
   );
 });
 
