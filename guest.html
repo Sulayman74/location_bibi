@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Espace Voyageur – La Cabine du Cap d'Agde</title>
+  <meta name="description" content="Votre portail invité : code WiFi, guide de la villa, recommandations locales." />
+  <meta name="robots" content="noindex" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#d97706" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Studio – Invité" />
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="/src/styles/main.css" />
+</head>
+<body class="bg-stone-100 text-stone-800 min-h-screen pb-24">
+
+  <!-- Top Bar -->
+  <header class="bg-white shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-sm">KP</div>
+      <div>
+        <div class="font-serif font-semibold text-stone-800 text-sm">La Cabine du Cap d'Agde</div>
+        <div id="guest-name-header" class="text-xs text-stone-400">Espace voyageur</div>
+      </div>
+    </div>
+    <div id="stay-status-badge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-stone-100 text-stone-500">
+      Chargement…
+    </div>
+  </header>
+
+  <!-- ==================== BOOKING NOT FOUND ==================== -->
+  <div id="no-booking" class="hidden max-w-md mx-auto px-4 pt-12 text-center">
+    <div class="bg-white rounded-3xl p-8 shadow-sm">
+      <div class="text-5xl mb-4">🔑</div>
+      <h2 class="font-serif text-2xl font-bold mb-3">Accéder à votre séjour</h2>
+      <p class="text-stone-500 text-sm mb-6">Entrez le code de réservation reçu par email.</p>
+      <input type="text" id="booking-code-input"
+        class="w-full border border-stone-200 rounded-xl px-4 py-3 text-center text-lg font-mono tracking-widest focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 uppercase mb-3"
+        placeholder="ABC-123456" maxlength="12" />
+      <div id="booking-code-error" class="text-red-500 text-xs mb-3 hidden"></div>
+      <button id="verify-booking-btn"
+        class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-xl transition shadow-lg">
+        Accéder à mon séjour
+      </button>
+      <p class="text-xs text-stone-400 mt-4">
+        Vous avez réservé via Airbnb ou Booking.com ?<br/>
+        <a href="#" class="text-amber-600 underline">Contactez l'hôte</a> pour recevoir votre code d'accès.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN GUEST CONTENT ==================== -->
+  <div id="guest-content" class="hidden max-w-2xl mx-auto px-4 pt-6">
+
+    <!-- Stay Summary Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-5 mb-5">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="text-xs text-stone-400 font-medium uppercase tracking-wider mb-1">Votre séjour</div>
+          <div id="stay-dates" class="font-semibold text-stone-800 text-sm"></div>
+          <div id="stay-nights" class="text-xs text-stone-500 mt-0.5"></div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs text-stone-400 mb-1">Arrivée</div>
+          <div id="checkin-time" class="font-bold text-amber-600 text-lg">16:00</div>
+        </div>
+      </div>
+      <!-- Countdown to check-in -->
+      <div id="checkin-countdown" class="hidden mt-4 bg-amber-50 rounded-xl p-3">
+        <div class="text-xs text-amber-700 font-semibold mb-1">⏳ Arrivée dans</div>
+        <div id="countdown-display" class="font-mono font-bold text-amber-800 text-xl"></div>
+      </div>
+    </div>
+
+    <!-- ==================== WIFI CODE CARD ==================== -->
+    <div id="wifi-section" class="mb-5">
+      <!-- Locked state (too early or too late) -->
+      <div id="wifi-locked" class="hidden bg-white rounded-2xl shadow-sm border border-stone-100 p-5">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-stone-100 flex items-center justify-center">
+            <svg class="w-5 h-5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+            </svg>
+          </div>
+          <div>
+            <div class="font-semibold text-stone-700">Code WiFi</div>
+            <div id="wifi-locked-msg" class="text-sm text-stone-400"></div>
+          </div>
+        </div>
+        <div id="wifi-unlock-countdown" class="bg-stone-50 rounded-xl p-3 text-sm text-stone-500 text-center">
+          <div id="wifi-unlock-time"></div>
+        </div>
+      </div>
+
+      <!-- Unlocked state -->
+      <div id="wifi-unlocked" class="hidden wifi-card rounded-2xl shadow-lg p-5 text-white">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+            </svg>
+            <span class="font-semibold">WiFi de la villa</span>
+          </div>
+          <div class="flex items-center gap-1 bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-full">
+            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+            Actif
+          </div>
+        </div>
+
+        <div class="bg-white/10 rounded-xl p-4 mb-3">
+          <div class="text-white/60 text-xs mb-1 uppercase tracking-wider">Réseau</div>
+          <div class="font-semibold text-base" id="wifi-ssid">Villa-Les-Oliviers</div>
+        </div>
+
+        <div class="bg-white/10 rounded-xl p-4">
+          <div class="text-white/60 text-xs mb-2 uppercase tracking-wider">Mot de passe</div>
+          <div class="flex items-center justify-between">
+            <div id="wifi-password" class="wifi-code text-white">••••••••</div>
+            <button id="toggle-wifi-btn" class="text-white/60 hover:text-white transition p-1">
+              <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </button>
+          </div>
+          <div class="flex gap-2 mt-3">
+            <button id="copy-wifi-btn"
+              class="flex-1 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold py-2 rounded-lg transition flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+              </svg>
+              Copier
+            </button>
+            <button id="share-wifi-btn"
+              class="flex-1 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold py-2 rounded-lg transition flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+              </svg>
+              Partager
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TABS ==================== -->
+    <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden mb-5">
+      <div class="flex border-b border-stone-100">
+        <button data-tab-target="tab-guide" class="nav-tab active flex-1 py-3 text-sm font-medium transition">
+          🏠 La villa
+        </button>
+        <button data-tab-target="tab-local" class="nav-tab flex-1 py-3 text-sm font-medium text-stone-500 hover:bg-stone-50 transition">
+          📍 Alentours
+        </button>
+        <button data-tab-target="tab-review" class="nav-tab flex-1 py-3 text-sm font-medium text-stone-500 hover:bg-stone-50 transition">
+          ⭐ Avis
+        </button>
+      </div>
+
+      <!-- Tab: Villa Guide -->
+      <div id="tab-guide" class="tab-panel active p-5">
+        <div class="space-y-4">
+          <div class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl">
+            <span class="text-xl mt-0.5">🚪</span>
+            <div>
+              <div class="font-semibold text-sm text-stone-800">Accès & Boîte à clés</div>
+              <div class="text-sm text-stone-500 mt-1">La clé se trouve dans la boîte à clés à l'entrée du portail. Le code est <strong class="text-stone-700" id="key-code">XXXX</strong>. Rangez-la après chaque sortie.</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl">
+            <span class="text-xl mt-0.5">🌡</span>
+            <div>
+              <div class="font-semibold text-sm text-stone-800">Climatisation</div>
+              <div class="text-sm text-stone-500 mt-1">Télécommandes dans chaque chambre. Température recommandée : 22-24°C. Pensez à fermer les fenêtres avant de l'allumer.</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl">
+            <span class="text-xl mt-0.5">🏊</span>
+            <div>
+              <div class="font-semibold text-sm text-stone-800">Piscine</div>
+              <div class="text-sm text-stone-500 mt-1">Horaires : 8h-22h. Le filtre se lance automatiquement. Pas de verre au bord de la piscine. Douche avant baignade.</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl">
+            <span class="text-xl mt-0.5">🗑</span>
+            <div>
+              <div class="font-semibold text-sm text-stone-800">Poubelles</div>
+              <div class="text-sm text-stone-500 mt-1">Collecte : Mardi et Vendredi matin. Bacs devant le portail la veille au soir. Tri sélectif : jaune = plastique/carton.</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl">
+            <span class="text-xl mt-0.5">📞</span>
+            <div>
+              <div class="font-semibold text-sm text-stone-800">Contact hôte</div>
+              <div class="text-sm text-stone-500 mt-1">
+                Pour toute urgence : <a href="tel:+33600000000" class="text-amber-600 font-semibold">+33 6 00 00 00 00</a><br/>
+                Messages WhatsApp acceptés.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Local Recommendations -->
+      <div id="tab-local" class="tab-panel p-5">
+        <div class="space-y-3" id="guest-recommendations"></div>
+      </div>
+
+      <!-- Tab: Review Request -->
+      <div id="tab-review" class="tab-panel p-5">
+        <div id="review-before-departure" class="text-center py-4">
+          <div class="text-4xl mb-3">😊</div>
+          <h3 class="font-serif font-semibold text-lg mb-2">Votre avis compte beaucoup !</h3>
+          <p class="text-stone-500 text-sm mb-5">Si vous appréciez votre séjour, partagez votre expérience pour aider les futurs voyageurs.</p>
+          <a id="google-review-link" href="https://g.page/r/VOTRE_ID/review" target="_blank" rel="noopener"
+            class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-5 py-3 rounded-xl transition shadow-lg text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.584 2.376a.5.5 0 01.832 0l2.401 3.821 4.378.937a.5.5 0 01.268.83l-3.01 3.215.493 4.42a.5.5 0 01-.712.513L12 14.07l-4.234 2.042a.5.5 0 01-.712-.513l.493-4.42L.537 7.964a.5.5 0 01.268-.83l4.378-.937 2.401-3.821z"/>
+            </svg>
+            Laisser un avis Google
+          </a>
+          <div class="mt-4">
+            <a id="airbnb-review-link" href="#" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-2 border border-stone-200 text-stone-600 hover:border-stone-300 font-medium px-5 py-2.5 rounded-xl transition text-sm">
+              Laisser un avis Airbnb
+            </a>
+          </div>
+          <p class="text-xs text-stone-400 mt-4">Merci pour votre confiance. À bientôt ! 🙏</p>
+        </div>
+
+        <!-- Post-stay thank you -->
+        <div id="review-post-stay" class="hidden text-center py-4">
+          <div class="text-4xl mb-3">🙏</div>
+          <h3 class="font-serif font-semibold text-lg mb-2">Merci d'avoir séjourné chez nous !</h3>
+          <p class="text-stone-500 text-sm mb-5">Votre séjour est terminé. Nous espérons vous revoir bientôt.</p>
+          <a id="post-google-review-link" href="https://g.page/r/VOTRE_ID/review" target="_blank" rel="noopener"
+            class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-5 py-3 rounded-xl transition shadow-lg text-sm w-full justify-center">
+            ⭐ Partager mon expérience sur Google
+          </a>
+        </div>
+      </div>
+
+      <!-- Tab: Profile -->
+      <div id="tab-profile" class="tab-panel p-5">
+        <div class="text-center py-8">
+          <div class="w-20 h-20 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">👤</div>
+          <h3 class="font-serif font-semibold text-xl mb-1" id="profile-name">Votre Profil</h3>
+          <p class="text-stone-500 text-sm mb-6">Gérez vos informations de séjour</p>
+          
+          <div class="space-y-3 text-left max-w-xs mx-auto">
+            <div class="p-3 bg-stone-50 rounded-xl border border-stone-100">
+              <div class="text-xs text-stone-400 uppercase font-bold tracking-wider mb-0.5">Code Réservation</div>
+              <div class="font-mono font-bold text-stone-800" id="profile-booking-id">—</div>
+            </div>
+            <button id="logout-guest-btn" class="w-full py-3 text-red-500 font-semibold border border-red-100 rounded-xl hover:bg-red-50 transition mt-4">
+              Se déconnecter
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QR Code invite section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-5 mb-5">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-stone-100 rounded-xl flex items-center justify-center flex-shrink-0" id="qr-container">
+          <!-- QR Code will be generated here -->
+          <svg class="w-6 h-6 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="font-semibold text-stone-800 text-sm">Partagez avec vos proches</div>
+          <div class="text-xs text-stone-500 mt-0.5">Faites scanner ce QR code pour qu'ils installent l'app et voient aussi le code WiFi.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FLOATING NAVIGATION ==================== -->
+  <div class="floating-nav-container md:hidden">
+    <nav class="floating-nav">
+      <button data-tab-target="tab-guide" class="floating-nav-btn active">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span class="floating-nav-label">Accueil</span>
+      </button>
+
+      <button data-tab-target="tab-local" class="floating-nav-btn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span class="floating-nav-label hidden">Explorer</span>
+      </button>
+
+      <button data-tab-target="tab-review" class="floating-nav-btn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        <span class="floating-nav-label hidden">Séjour</span>
+      </button>
+
+      <button data-tab-target="tab-profile" class="floating-nav-btn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+        <span class="floating-nav-label hidden">Profil</span>
+      </button>
+    </nav>
+  </div>
+
+  <script type="module" src="/src/guest.js"></script>
+</body>
+</html>

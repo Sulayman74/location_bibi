@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+  }
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ==================== Components ==================== */
+@layer components {
+  .hero-gradient {
+    background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 100%);
+  }
+
+  .glass {
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.85);
+  }
+
+  /* Calendar */
+  .availability-day {
+    @apply rounded-lg border text-center text-sm font-medium transition-all duration-150 select-none h-9;
+  }
+  .availability-day.available {
+    @apply bg-green-50 border-green-300 cursor-pointer;
+  }
+  .availability-day.available:hover {
+    @apply bg-amber-500 text-white border-amber-500;
+  }
+  .availability-day.booked {
+    @apply bg-red-50 text-red-300 border-red-100 cursor-not-allowed line-through;
+  }
+  .availability-day.selected {
+    @apply bg-amber-500 text-white border-amber-500;
+  }
+  .availability-day.in-range {
+    @apply bg-amber-50 border-amber-200;
+  }
+  .availability-day.today {
+    @apply ring-2 ring-amber-400;
+  }
+  .availability-day.past {
+    @apply bg-stone-50 text-stone-300 border-transparent cursor-not-allowed;
+  }
+
+  /* Stripe */
+  #card-element {
+    @apply p-3 border border-stone-200 rounded-xl bg-white transition;
+  }
+  #card-element.StripeElement--focus {
+    @apply border-amber-400 ring-2 ring-amber-100;
+  }
+  #card-element.StripeElement--invalid {
+    @apply border-red-400;
+  }
+
+  /* Step indicator */
+  .step-indicator.active {
+    @apply bg-amber-500 text-white;
+  }
+  .step-indicator.done {
+    @apply bg-emerald-500 text-white;
+  }
+  .step-connector.done {
+    @apply bg-emerald-500;
+  }
+
+  /* Tab */
+  .nav-tab.active {
+    @apply bg-amber-500 text-white;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Admin nav */
+  .admin-nav-item.active {
+    @apply bg-amber-500/10 text-amber-600 border-r-2 border-amber-500;
+  }
+}
+
+/* ==================== Utilities ==================== */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .wifi-code {
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+  }
+
+  .loading-spinner {
+    border: 3px solid #f3f4f6;
+    border-top-color: #d97706;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+}
+
+/* ==================== Page Transitions (View Transitions API) ==================== */
+
+/* Entrée initiale de la page */
+[data-transitioning="in"] {
+  animation: page-fade-in 0.25s ease both;
+}
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Forward : glisse depuis la droite */
+[data-transition-type="forward"]::view-transition-old(root) {
+  animation: slide-out-left 0.3s ease both;
+}
+[data-transition-type="forward"]::view-transition-new(root) {
+  animation: slide-in-right 0.3s ease both;
+}
+
+/* Back : glisse depuis la gauche */
+[data-transition-type="back"]::view-transition-old(root) {
+  animation: slide-out-right 0.3s ease both;
+}
+[data-transition-type="back"]::view-transition-new(root) {
+  animation: slide-in-left 0.3s ease both;
+}
+
+/* Fade (admin, pages de même profondeur) */
+[data-transition-type="fade"]::view-transition-old(root) {
+  animation: fade-out 0.25s ease both;
+}
+[data-transition-type="fade"]::view-transition-new(root) {
+  animation: fade-in 0.25s ease both;
+}
+
+/* Default (sans attribut) */
+::view-transition-old(root) { animation: fade-out 0.2s ease both; }
+::view-transition-new(root) { animation: fade-in  0.2s ease both; }
+
+@keyframes slide-in-right  { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slide-in-left   { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slide-out-left  { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }
+@keyframes slide-out-right { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* Fallback pour navigateurs sans View Transitions */
+.page-enter {
+  animation: page-fade-in 0.25s ease both;
+}
+.page-leave {
+  animation: fade-out 0.22s ease forwards;
+}
+
+/* ==================== Hero Slider keyframes ==================== */
+
+.slide-in-right  { animation: slide-in-right  0.45s cubic-bezier(0.4,0,0.2,1) both; }
+.slide-in-left   { animation: slide-in-left   0.45s cubic-bezier(0.4,0,0.2,1) both; }
+.slide-out-left  { animation: slide-out-left  0.45s cubic-bezier(0.4,0,0.2,1) both; }
+.slide-out-right { animation: slide-out-right 0.45s cubic-bezier(0.4,0,0.2,1) both; }
+
+
+/* ==================== Floating Navigation ==================== */
+.floating-nav-container {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  z-index: 50;
+}
+
+.floating-nav {
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  padding: 0.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.floating-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 9999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.floating-nav-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+}
+
+.floating-nav-btn:hover {
+  color: white;
+}
+
+.floating-nav-btn.active {
+  background: white;
+  color: #0f172a;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.floating-nav-btn.active svg {
+  stroke-width: 2.5;
+}
+
+.floating-nav-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO Primary -->
+  <title>La Cabine du Cap d'Agde – Studio Cosy au Port | Séjour Littoral</title>
+<meta name="description" content="Charmant studio cabine au cœur du Cap d'Agde. À deux pas du port de plaisance et des plages. Tout confort, idéal pour un séjour en duo ou en famille." />
+<meta name="apple-mobile-web-app-title" content="Studio Cap d'Agde">
+  <meta name="keywords" content="location vacances, studio, Cap d'Agde, airbnb, séjour, piscine, résidence" />
+  <link rel="canonical" href="https://studio-les-oliviers.fr/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://studio-les-oliviers.fr/" />
+  <meta property="og:title" content="La Cabine du Cap d'Agde – Location Saisonnière au Cap" />
+  <meta property="og:description" content="Charmant studio cabine au cœur du Cap d'Agde. Réservez directement et économisez les frais de plateforme." />
+  <meta property="og:image" content="https://studio-les-oliviers.fr/assets/og-image.jpg" />
+  <meta property="og:locale" content="fr_FR" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="La Cabine du Cap d'Agde – Location Saisonnière" />
+  <meta name="twitter:description" content="Studio Cabine avec piscine en résidence. Réservation directe sécurisée." />
+  <meta name="twitter:image" content="https://studio-les-oliviers.fr/assets/og-image.jpg" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#d97706" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="La Cabine du Cap d'Agde" />
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png" />
+
+  <!-- Preconnect fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="/src/styles/main.css" />
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    "name": "La Cabine du Cap d'Agde",
+    "description": "studio de charme avec piscine et vue panoramique à [Ville]",
+    "url": "https://studio-les-oliviers.fr",
+    "telephone": "+33600000000",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "[Adresse]",
+      "addressLocality": "[Ville]",
+      "postalCode": "[Code Postal]",
+      "addressCountry": "FR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.2965,
+      "longitude": 5.3698
+    },
+    "priceRange": "€€€",
+    "amenityFeature": [
+      { "@type": "LocationFeatureSpecification", "name": "Piscine", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "WiFi", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Climatisation", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Parking", "value": true }
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "47"
+    }
+  }
+  </script>
+
+</head>
+<body class="bg-stone-600 text-stone-200">
+
+  <!-- ==================== NAVIGATION ==================== -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-amber-100/40 backdrop-blur-2xl transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2 group">
+          <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-sm">KP</div>
+          <span class="font-serif font-semibold text-black text-lg drop-shadow">La Cabine du Cap d'Agde</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+          <a href="#logement" class="text-white/90 hover:text-white transition">Le Logement</a>
+          <a href="#disponibilites" class="text-white/90 hover:text-white transition">Disponibilités</a>
+          <a href="#alentours" class="text-white/90 hover:text-white transition">Alentours</a>
+          <a href="#avis" class="text-white/90 hover:text-white transition">Avis</a>
+          <a href="/reservation.html" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full font-semibold transition shadow-lg">
+            Réserver →
+          </a>
+        </div>
+
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-btn" class="md:hidden text-white p-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden glass border-t border-white/20">
+      <div class="px-4 py-4 space-y-2">
+        <a href="#logement" class="block py-2 text-stone-700 font-medium">Le Logement</a>
+        <a href="#disponibilites" class="block py-2 text-stone-700 font-medium">Disponibilités</a>
+        <a href="#alentours" class="block py-2 text-stone-700 font-medium">Alentours</a>
+        <a href="#avis" class="block py-2 text-stone-700 font-medium">Avis</a>
+        <a href="/reservation.html" class="block mt-3 bg-amber-500 text-white text-center py-3 rounded-xl font-semibold">
+          Réserver maintenant →
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="relative h-screen min-h-[600px] overflow-hidden">
+    <!-- Background Image -->
+    <div class="absolute inset-0 bg-gradient-to-br from-amber-900 to-stone-800">
+      <img
+        id="hero-img"
+        src="https://a0.muscache.com/im/pictures/hosting/Hosting-602554771321363177/original/fa0f3629-3da6-47fb-8272-7e072328eaf5.jpeg?im_w=1920"
+        alt="La Cabine du Cap d'Agde avec piscine"
+        class="w-full h-full object-cover opacity-80"
+        loading="eager"
+      />
+      <div class="hero-gradient absolute inset-0"></div>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 flex flex-col items-center justify-center h-full text-white text-center px-4">
+      <div class="animate-fade-in">
+        <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-1.5 text-sm font-medium mb-6 border border-white/25">
+          <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+          Disponible dès le <span id="next-available" class="font-semibold">—</span>
+        </div>
+
+<h1 class="font-serif text-4xl sm:text-5xl lg:text-7xl font-bold mb-4 leading-tight drop-shadow-lg">
+  La Cabine du Cap d'Agde
+</h1>
+<p class="text-lg sm:text-xl text-white/85 max-w-2xl mb-3 font-light">
+  Votre cocon au cœur de la station, entre port de plaisance et plages de sable fin
+</p>
+<div class="flex items-center justify-evenly gap-3 text-sm text-white/75 mb-10">
+  <span>📍 Le Cap d'Agde</span>
+  <span>·</span>
+  <span>⚓ Proche Port</span>
+  <span>·</span>
+  <span>👥 Jusqu'à 4 personnes</span>
+</div>
+
+        <!-- Primary CTA -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+          <a href="/reservation.html"
+            class="group bg-amber-500 hover:bg-amber-400 text-white font-bold px-8 py-4 rounded-2xl text-lg shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-amber-500/40">
+            Vérifier les disponibilités
+            <span class="ml-2 group-hover:translate-x-1 inline-block transition-transform">→</span>
+          </a>
+          <a href="#logement"
+            class="glass text-stone-800 font-semibold px-6 py-4 rounded-2xl text-base border border-white/30 hover:bg-white/95 transition">
+            Découvrir la Cabine
+          </a>
+        </div>
+
+        <!-- Trust signals -->
+        <div class="mt-8 flex items-center justify-center gap-6 text-sm text-white/70">
+          <div class="flex items-center gap-1">
+            <span class="text-yellow-400">★★★★★</span>
+            <span>4.9/5 (47 avis)</span>
+          </div>
+          <span>·</span>
+          <span>🔒 Paiement sécurisé</span>
+          <span>·</span>
+          <span>↩ Annulation flexible</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ==================== QUICK BOOKING BAR ==================== -->
+  <section class="sticky top-16 z-40 bg-white shadow-md border-b border-stone-200">
+    <div class="max-w-6xl mx-auto px-4 py-3">
+      <div class="flex flex-col sm:flex-row items-center gap-3 justify-between">
+        <div class="flex items-center gap-4 text-sm text-stone-600">
+          <span class="font-semibold text-stone-800">À partir de <span class="text-amber-600 text-lg font-bold">45€</span>/nuit</span>
+          <span class="hidden sm:block text-stone-300">|</span>
+          <span class="hidden sm:flex items-center gap-1">
+            <span class="text-yellow-400">★★★★★</span> 4.9 · 47 avis
+          </span>
+        </div>
+        <a href="/reservation.html"
+          class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition shadow-lg text-center">
+          Réserver maintenant →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== LOGEMENT ==================== -->
+  <section id="logement" class="py-12 max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <!-- Photos Grid -->
+      <div class="grid grid-cols-2 gap-3">
+        <img src="https://a0.muscache.com/im/pictures/hosting/Hosting-602554771321363177/original/2a1310e3-d4a5-417d-9596-cb9f535d013f.jpeg?im_w=1920"
+          alt="Piscine de la résidence studio" class="col-span-2 rounded-2xl w-full h-56 object-cover shadow-lg" loading="lazy" />
+        <img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6NjAyNTU0NzcxMzIxMzYzMTc3/original/af4a4b87-3590-4bcc-81bc-b6fa00eff894.jpeg?im_w=1920"
+          alt="Chambre principale" class="rounded-xl w-full h-36 object-cover shadow" loading="lazy" />
+        <img src="https://a0.muscache.com/im/pictures/hosting/Hosting-602554771321363177/original/56a94760-e812-4558-9076-b888f1841681.jpeg?im_w=1920"
+          alt="Cuisine moderne" class="rounded-xl w-full h-36 object-cover shadow" loading="lazy" />
+      </div>
+
+      <!-- Description -->
+      <div class="animate-slide-up">
+        <span class="text-amber-600 font-semibold text-sm uppercase tracking-wider">Le logement</span>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold mt-2 mb-2 leading-tight">
+          Un studio où chaque détail<br/>a été pensé pour vous
+        </h2>
+<article class="text-stone-100 leading-relaxed mb-2">
+  Idéalement situé au cœur de la station, notre studio cabine vous offre un pied-à-terre 
+  lumineux et fonctionnel pour vos vacances. À seulement quelques minutes à pied du 
+  port de plaisance et des plages, profitez d'un séjour sans voiture où tout est 
+  accessible : commerces, restaurants et animations du Cap d'Agde.
+</article>
+
+        <!-- Features Grid -->
+<div class="grid grid-cols-2 gap-4 mb-3">
+  <div class="flex items-center gap-3 p-3 bg-amber-50 rounded-xl">
+    <span class="text-2xl">🏠</span>
+    <div><div class="font-semibold text-amber-400 text-sm">Studio Cabine</div><div class="text-xs text-stone-500">Espace optimisé</div></div>
+  </div>
+  <div class="flex items-center gap-3 p-3 bg-amber-50 rounded-xl">
+    <span class="text-2xl">🏖️</span>
+    <div><div class="font-semibold text-amber-400 text-sm">Plage à pied</div><div class="text-xs text-stone-500">Sable fin à proximité</div></div>
+  </div>
+  <div class="flex items-center gap-3 p-3 bg-amber-50 rounded-xl">
+    <span class="text-2xl">🍽️</span>
+    <div><div class="font-semibold text-amber-400 text-sm">Cuisine équipée</div><div class="text-xs text-stone-500">Plaques, micro-ondes</div></div>
+  </div>
+  <div class="flex items-center gap-3 p-3 bg-amber-50 rounded-xl">
+    <span class="text-2xl">🚢</span>
+    <div><div class="font-semibold text-amber-400 text-sm">Cœur de station</div><div class="text-xs text-stone-500">Commerces & Port</div></div>
+  </div>
+</div>
+<div class="flex items-center justify-center">
+  <a href="/reservation.html"
+  class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl transition shadow-lg">
+  Vérifier les disponibilités
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+  </svg>
+</a>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== AVAILABILITY CALENDAR ==================== -->
+  <section id="disponibilites" class="py-16 bg-amber-50/50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="text-amber-600 font-semibold text-sm uppercase tracking-wider">Disponibilités</span>
+        <h2 class="font-serif text-3xl font-bold mt-2">Vérifiez les dates disponibles</h2>
+        <p class="text-stone-500 mt-2">Calendrier mis à jour en temps réel depuis Airbnb et Booking.com</p>
+      </div>
+
+      <!-- Calendar Container -->
+      <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <button id="prev-month" class="p-2 hover:bg-stone-100 rounded-xl transition">
+            <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <div>
+            <h3 id="calendar-title" class="font-serif font-bold text-xl text-center text-stone-800"></h3>
+          </div>
+          <button id="next-month" class="p-2 hover:bg-stone-100 rounded-xl transition">
+            <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Day headers -->
+        <div class="grid grid-cols-7 mb-2">
+          <div class="text-center text-xs font-semibold text-stone-400 py-2">Lun</div>
+          <div class="text-center text-xs font-semibold text-stone-400 py-2">Mar</div>
+          <div class="text-center text-xs font-semibold text-stone-400 py-2">Mer</div>
+          <div class="text-center text-xs font-semibold text-stone-400 py-2">Jeu</div>
+          <div class="text-center text-xs font-semibold text-stone-400 py-2">Ven</div>
+          <div class="text-center text-xs font-semibold text-stone-400 py-2">Sam</div>
+          <div class="text-center text-xs font-semibold text-stone-400 py-2">Dim</div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+
+        <!-- Legend -->
+        <div class="flex items-center gap-6 mt-6 pt-5 border-t border-stone-100 text-xs text-stone-500">
+          <span class="flex items-center gap-1.5">
+            <span class="w-4 h-4 rounded bg-green-50 border border-green-300 inline-block"></span>Disponible
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-4 h-4 rounded bg-red-50 border border-red-200 inline-block"></span>Réservé
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-4 h-4 rounded bg-amber-400 inline-block"></span>Sélectionné
+          </span>
+        </div>
+
+        <!-- CTA under calendar -->
+        <div class="mt-6 text-center">
+          <a href="/reservation.html" id="calendar-cta"
+            class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 py-3 rounded-xl transition shadow-lg">
+            Continuer la réservation →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PRICING ==================== -->
+  <section class="py-16 max-w-4xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-10">
+      <span class="text-amber-600 font-semibold text-sm uppercase tracking-wider">Tarifs</span>
+      <h2 class="font-serif text-3xl font-bold mt-2">Tarification transparente</h2>
+    </div>
+    <div class="grid sm:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 text-center">
+        <div class="text-3xl mb-2">🌸</div>
+        <h3 class="font-semibold text-stone-700 mb-1">Basse saison</h3>
+        <div class="text-sm text-stone-400 mb-3">Oct – Mai</div>
+        <div class="text-2xl font-bold text-stone-800">45€<span class="text-sm font-normal text-stone-500">/nuit</span></div>
+      </div>
+      <div class="bg-amber-500 rounded-2xl p-6 shadow-lg text-center text-white relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-700 text-white text-xs font-bold px-3 py-1 rounded-full">Populaire</div>
+        <div class="text-3xl mb-2">☀️</div>
+        <h3 class="font-semibold mb-1">Haute saison</h3>
+        <div class="text-sm text-amber-200 mb-3">Juin – Sept</div>
+        <div class="text-2xl font-bold">85€<span class="text-sm font-normal text-amber-200">/nuit</span></div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 text-center">
+        <div class="text-3xl mb-2">🎄</div>
+        <h3 class="font-semibold text-stone-700 mb-1">Vacances scolaires</h3>
+        <div class="text-sm text-stone-400 mb-3">Noël, Pâques</div>
+        <div class="text-2xl font-bold text-stone-800">90€<span class="text-sm font-normal text-stone-500">/nuit</span></div>
+      </div>
+    </div>
+    <div class="mt-6 bg-emerald-50 rounded-2xl p-4 flex items-start gap-3 border border-emerald-200">
+      <span class="text-2xl">💡</span>
+      <div>
+        <div class="font-semibold text-emerald-800">Économisez jusqu'à 15% en réservant directement</div>
+        <div class="text-sm text-emerald-700">Sans frais de service Airbnb ou Booking.com. Paiement sécurisé par Stripe.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ALENTOURS ==================== -->
+  <section id="alentours" class="py-16 bg-stone-100/60">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="text-amber-600 font-semibold text-sm uppercase tracking-wider">Aux alentours</span>
+        <h2 class="font-serif text-3xl font-bold mt-2">Tout ce qu'il vous faut à proximité</h2>
+        <p class="text-stone-500 mt-2">Sélection de nos adresses et activités préférées</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8" id="rec-tabs">
+        <button data-tab="plages" class="rec-tab active px-4 py-2 rounded-full text-sm font-medium bg-amber-500 text-white transition">🏖 Plages</button>
+        <button data-tab="restaurants" class="rec-tab px-4 py-2 rounded-full text-sm font-medium bg-white text-stone-600 hover:bg-amber-50 transition">🍽 Restaurants</button>
+        <button data-tab="activites" class="rec-tab px-4 py-2 rounded-full text-sm font-medium bg-white text-stone-600 hover:bg-amber-50 transition">🎯 Activités</button>
+        <button data-tab="commerces" class="rec-tab px-4 py-2 rounded-full text-sm font-medium bg-white text-stone-600 hover:bg-amber-50 transition">🛒 Commerces</button>
+      </div>
+
+      <!-- Tab Content -->
+      <div id="rec-content" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- ==================== AVIS ==================== -->
+  <section id="avis" class="py-16 max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-10">
+      <span class="text-amber-600 font-semibold text-sm uppercase tracking-wider">Avis clients</span>
+      <h2 class="font-serif text-3xl font-bold mt-2">Ce que disent nos voyageurs</h2>
+      <div class="flex items-center justify-center gap-2 mt-3">
+        <div class="text-yellow-400 text-xl">★★★★★</div>
+        <span class="font-bold text-stone-800">4.9</span>
+        <span class="text-stone-500">sur la base de 47 avis</span>
+      </div>
+    </div>
+
+    <!-- Reviews grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="reviews-grid"></div>
+
+    <!-- CTA Google Reviews -->
+    <div class="mt-10 text-center">
+      <a href="https://g.page/r/VOTRE_ID_GOOGLE/review" target="_blank" rel="noopener"
+        class="inline-flex items-center gap-2 border-2 border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white font-semibold px-6 py-3 rounded-xl transition">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
+        </svg>
+        Laisser un avis Google
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== RÈGLEMENT / INFOS ==================== -->
+  <section class="py-12 bg-stone-800 text-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 grid sm:grid-cols-3 gap-8 text-center">
+      <div>
+        <div class="text-3xl mb-3">🕐</div>
+        <h3 class="font-semibold mb-1">Horaires</h3>
+        <p class="text-stone-400 text-sm">Arrivée : 16h00<br/>Départ : 11h00</p>
+      </div>
+      <div>
+        <div class="text-3xl mb-3">↩</div>
+        <h3 class="font-semibold mb-1">Annulation</h3>
+        <p class="text-stone-400 text-sm">Remboursement intégral<br/>jusqu'à 7 jours avant</p>
+      </div>
+      <div>
+        <div class="text-3xl mb-3">📱</div>
+        <h3 class="font-semibold mb-1">Application invité</h3>
+        <p class="text-stone-400 text-sm">Installez notre app sur place<br/>pour accéder au code WiFi</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FINAL CTA ==================== -->
+  <section class="py-20 bg-gradient-to-br from-amber-500 to-amber-700 text-white text-center">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="font-serif text-4xl font-bold mb-4">Votre prochaine escapade commence ici</h2>
+      <p class="text-amber-100 text-lg mb-8">Réservez directement et profitez de tarifs privilégiés sans commission</p>
+      <a href="/reservation.html"
+        class="inline-flex items-center gap-2 bg-white text-amber-700 font-bold px-8 py-4 rounded-2xl text-lg shadow-2xl hover:bg-amber-50 transition-all hover:scale-105">
+        Réserver le studio dès maintenant
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+      <div class="mt-6 text-amber-200 text-sm flex items-center justify-center gap-4 flex-wrap">
+        <span>🔒 Paiement 100% sécurisé (Stripe)</span>
+        <span>·</span>
+        <span>📱 App invité incluse</span>
+        <span>·</span>
+        <span>💬 Réponse en moins d'1h</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-stone-900 text-stone-400 py-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid sm:grid-cols-3 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-xs">V</div>
+            <span class="font-serif font-semibold text-white">La Cabine du Cap d'Agde</span>
+          </div>
+          <p class="text-sm leading-relaxed">Résidence Chill en location saisonnière au Cap d'Agde. Votre hébergement en Provence.</p>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-3">Navigation</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#logement" class="hover:text-amber-400 transition">Le logement</a></li>
+            <li><a href="#disponibilites" class="hover:text-amber-400 transition">Disponibilités</a></li>
+            <li><a href="#alentours" class="hover:text-amber-400 transition">Alentours</a></li>
+            <li><a href="/reservation.html" class="hover:text-amber-400 transition">Réserver</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-3">Légal</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-amber-400 transition">Mentions légales</a></li>
+            <li><a href="#" class="hover:text-amber-400 transition">Conditions générales</a></li>
+            <li><a href="#" class="hover:text-amber-400 transition">Politique de confidentialité</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-stone-800 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs gap-3">
+        <p>© 2025 La Cabine du Cap d'Agde. Tous droits réservés.</p>
+        <p>Conçu avec ♥ pour une expérience unique</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== PWA INSTALL BANNER ==================== -->
+  <div id="pwa-banner" class="hidden fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50">
+    <div class="glass rounded-2xl shadow-2xl p-4 border border-amber-200">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0">V</div>
+        <div class="flex-1 min-w-0">
+          <div class="font-semibold text-stone-800 text-sm">Installer l'application</div>
+          <div class="text-xs text-stone-500 mt-0.5">Accès rapide + code WiFi pendant votre séjour</div>
+          <div class="flex gap-2 mt-3">
+            <button id="pwa-install-btn" class="bg-amber-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">Installer</button>
+            <button id="pwa-dismiss-btn" class="text-stone-400 text-xs px-2 py-1.5">Plus tard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

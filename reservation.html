@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Réservation – La Cabine du Cap d'Agde</title>
+  <meta name="description" content="Réservez directement la La Cabine du Cap d'Agde. Paiement sécurisé Stripe, confirmation instantanée." />
+  <meta name="robots" content="noindex" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#d97706" />
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="/src/styles/main.css" />
+</head>
+<body class="bg-stone-50 text-stone-800 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-stone-200 px-4 py-4">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-sm">V</div>
+        <span class="font-serif font-semibold text-stone-800">La Cabine du Cap d'Agde</span>
+      </a>
+      <div class="flex items-center gap-4 text-xs text-stone-500">
+        <span class="flex items-center gap-1">
+          <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          Paiement sécurisé SSL
+        </span>
+        <span class="flex items-center gap-1">
+          <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M11.584 2.376a.5.5 0 01.832 0l2.401 3.821 4.378.937a.5.5 0 01.268.83l-3.01 3.215.493 4.42a.5.5 0 01-.712.513L12 14.07l-4.234 2.042a.5.5 0 01-.712-.513l.493-4.42L.537 7.964a.5.5 0 01.268-.83l4.378-.937 2.401-3.821z"/>
+          </svg>
+          4.9/5 · 47 avis
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Progress Steps -->
+  <div class="bg-white border-b border-stone-100">
+    <div class="max-w-5xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-center gap-0">
+        <div class="flex flex-col items-center">
+          <div id="step1-indicator" class="step-indicator active w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors">1</div>
+          <span class="text-xs text-stone-500 mt-1">Dates</span>
+        </div>
+        <div id="connector-1-2" class="step-connector w-16 sm:w-24 h-0.5 bg-stone-200 mx-2 transition-colors"></div>
+        <div class="flex flex-col items-center">
+          <div id="step2-indicator" class="step-indicator w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-sm font-bold transition-colors">2</div>
+          <span class="text-xs text-stone-500 mt-1">Infos</span>
+        </div>
+        <div id="connector-2-3" class="step-connector w-16 sm:w-24 h-0.5 bg-stone-200 mx-2 transition-colors"></div>
+        <div class="flex flex-col items-center">
+          <div id="step3-indicator" class="step-indicator w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-sm font-bold transition-colors">3</div>
+          <span class="text-xs text-stone-500 mt-1">Paiement</span>
+        </div>
+        <div id="connector-3-4" class="step-connector w-16 sm:w-24 h-0.5 bg-stone-200 mx-2 transition-colors"></div>
+        <div class="flex flex-col items-center">
+          <div id="step4-indicator" class="step-indicator w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-sm font-bold transition-colors">4</div>
+          <span class="text-xs text-stone-500 mt-1">Confirmé</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-5xl mx-auto px-4 py-8">
+    <div class="grid lg:grid-cols-3 gap-8">
+
+      <!-- ==================== FORM AREA ==================== -->
+      <div class="lg:col-span-2">
+
+        <!-- STEP 1: Date Selection -->
+        <div id="step1" class="booking-step">
+          <h1 class="font-serif text-2xl font-bold mb-6">Choisissez vos dates</h1>
+
+          <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+            <!-- Mini calendar for date selection -->
+            <div class="flex items-center justify-between mb-4">
+              <button id="cal2-prev" class="p-2 hover:bg-stone-100 rounded-xl transition">
+                <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <h3 id="cal2-title" class="font-semibold text-stone-800"></h3>
+              <button id="cal2-next" class="p-2 hover:bg-stone-100 rounded-xl transition">
+                <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+            <div class="grid grid-cols-7 mb-2">
+              <div class="text-center text-xs font-semibold text-stone-400 py-1">Lu</div>
+              <div class="text-center text-xs font-semibold text-stone-400 py-1">Ma</div>
+              <div class="text-center text-xs font-semibold text-stone-400 py-1">Me</div>
+              <div class="text-center text-xs font-semibold text-stone-400 py-1">Je</div>
+              <div class="text-center text-xs font-semibold text-stone-400 py-1">Ve</div>
+              <div class="text-center text-xs font-semibold text-stone-400 py-1">Sa</div>
+              <div class="text-center text-xs font-semibold text-stone-400 py-1">Di</div>
+            </div>
+            <div id="cal2-grid" class="grid grid-cols-7 gap-1"></div>
+
+            <!-- Selected dates display -->
+            <div class="mt-5 grid grid-cols-2 gap-3">
+              <div class="border border-stone-200 rounded-xl p-3">
+                <div class="text-xs text-stone-400 font-medium mb-1">ARRIVÉE</div>
+                <div id="display-checkin" class="font-semibold text-stone-700 text-sm">Sélectionnez</div>
+              </div>
+              <div class="border border-stone-200 rounded-xl p-3">
+                <div class="text-xs text-stone-400 font-medium mb-1">DÉPART</div>
+                <div id="display-checkout" class="font-semibold text-stone-700 text-sm">Sélectionnez</div>
+              </div>
+            </div>
+
+            <div id="guest-selector" class="mt-4 border border-stone-200 rounded-xl p-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-xs text-stone-400 font-medium">VOYAGEURS</div>
+                  <div class="font-semibold text-stone-700 text-sm mt-0.5">
+                    <span id="guest-count">2</span> voyageur(s)
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button id="guest-minus" class="w-7 h-7 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100 transition text-stone-600">−</button>
+                  <span id="guest-display" class="font-semibold text-stone-800 w-4 text-center">2</span>
+                  <button id="guest-plus" class="w-7 h-7 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100 transition text-stone-600">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button id="to-step2" disabled
+            class="mt-6 w-full bg-amber-500 hover:bg-amber-600 disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-2xl transition text-base shadow-lg">
+            Continuer avec ces dates →
+          </button>
+        </div>
+
+        <!-- STEP 2: Guest Info -->
+        <div id="step2" class="booking-step hidden">
+          <button id="back-to-step1" class="flex items-center gap-1 text-stone-500 hover:text-stone-700 text-sm mb-5 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Modifier les dates
+          </button>
+          <h2 class="font-serif text-2xl font-bold mb-6">Vos informations</h2>
+
+          <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+            <form id="guest-form" novalidate>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">Prénom *</label>
+                  <input type="text" name="firstName" required autocomplete="given-name"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition"
+                    placeholder="Jean" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">Nom *</label>
+                  <input type="text" name="lastName" required autocomplete="family-name"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition"
+                    placeholder="Dupont" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">Email *</label>
+                  <input type="email" name="email" required autocomplete="email"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition"
+                    placeholder="jean.dupont@email.fr" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">Téléphone *</label>
+                  <input type="tel" name="phone" required autocomplete="tel"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition"
+                    placeholder="+33 6 XX XX XX XX" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">Message à l'hôte (optionnel)</label>
+                  <textarea name="message" rows="3"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition resize-none"
+                    placeholder="Horaire d'arrivée prévu, occasion spéciale..."></textarea>
+                </div>
+              </div>
+
+              <!-- Consent -->
+              <label class="flex items-start gap-3 mt-4 cursor-pointer">
+                <input type="checkbox" name="consent" required
+                  class="mt-0.5 w-4 h-4 rounded border-stone-300 text-amber-500 focus:ring-amber-500 cursor-pointer" />
+                <span class="text-xs text-stone-500 leading-relaxed">
+                  J'accepte les <a href="#" class="text-amber-600 underline">conditions générales</a> et la
+                  <a href="#" class="text-amber-600 underline">politique d'annulation</a>. Remboursement intégral si annulation 7 jours avant.
+                </span>
+              </label>
+            </form>
+          </div>
+
+          <button id="to-step3"
+            class="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-4 rounded-2xl transition text-base shadow-lg">
+            Passer au paiement →
+          </button>
+        </div>
+
+        <!-- STEP 3: Payment -->
+        <div id="step3" class="booking-step hidden">
+          <button id="back-to-step2" class="flex items-center gap-1 text-stone-500 hover:text-stone-700 text-sm mb-5 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Modifier les infos
+          </button>
+          <h2 class="font-serif text-2xl font-bold mb-2">Paiement sécurisé</h2>
+          <p class="text-stone-500 text-sm mb-6">Vos données sont chiffrées SSL. Propulsé par Stripe.</p>
+
+          <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+            <!-- Stripe Card Element -->
+            <div class="mb-5">
+              <label class="block text-sm font-medium text-stone-700 mb-2">Carte bancaire *</label>
+              <div id="card-element" class="min-h-[44px]"></div>
+              <div id="card-errors" class="text-red-500 text-xs mt-2 hidden"></div>
+            </div>
+
+            <!-- Trust badges -->
+            <div class="flex flex-wrap items-center gap-3 text-xs text-stone-400 border-t border-stone-100 pt-4">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                SSL 256-bit
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>
+                Visa · Mastercard · CB
+              </span>
+              <span>Powered by Stripe</span>
+            </div>
+          </div>
+
+          <div id="payment-error" class="hidden mt-4 bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700"></div>
+
+          <button id="pay-btn"
+            class="mt-6 w-full bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-bold py-4 rounded-2xl transition text-base shadow-xl flex items-center justify-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <span id="pay-btn-text">Confirmer et payer</span>
+            <div id="pay-spinner" class="loading-spinner hidden"></div>
+          </button>
+
+          <p class="mt-3 text-center text-xs text-stone-400">
+            En cliquant vous acceptez nos CGV. Annulation gratuite jusqu'à 7 jours avant.
+          </p>
+        </div>
+
+        <!-- STEP 4: Confirmation -->
+        <div id="step4" class="booking-step hidden text-center">
+          <div class="bg-white rounded-3xl shadow-sm border border-stone-100 p-8 sm:p-12">
+            <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <h2 class="font-serif text-3xl font-bold text-stone-800 mb-3">Réservation confirmée !</h2>
+            <p class="text-stone-500 mb-6" id="confirmation-subtitle">Un email de confirmation a été envoyé à votre adresse.</p>
+
+            <div id="booking-summary" class="text-left bg-stone-50 rounded-2xl p-5 mb-6"></div>
+
+            <div class="bg-amber-50 rounded-2xl p-4 mb-6 text-sm text-amber-800">
+              <div class="font-semibold mb-1">📱 Installez l'application pour accéder au code WiFi</div>
+              <div class="text-amber-600">Le code WiFi sera disponible 2h avant votre arrivée directement dans l'app.</div>
+            </div>
+
+            <a href="/guest.html" id="to-guest-portal"
+              class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl transition shadow-lg">
+              Accéder à mon espace voyageur →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== BOOKING SUMMARY SIDEBAR ==================== -->
+      <div class="lg:col-span-1">
+        <div class="sticky top-24">
+          <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-5 mb-4">
+            <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&q=75"
+              alt="La Cabine du Cap d'Agde" class="w-full h-36 object-cover rounded-xl mb-4" loading="lazy" />
+            <div class="font-serif font-semibold text-stone-800 text-lg">La Cabine du Cap d'Agde</div>
+            <div class="flex items-center gap-1 text-sm text-stone-500 mt-1">
+              <span class="text-yellow-400 text-xs">★★★★★</span>
+              <span>4.9 · 47 avis</span>
+            </div>
+            <div class="text-xs text-stone-400 mt-1">📍 Cap d'Agde · Studio Cabine · Piscine</div>
+          </div>
+
+          <!-- Price breakdown -->
+          <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-5">
+            <h3 class="font-semibold text-stone-800 mb-4">Détail du prix</h3>
+            <div id="price-breakdown" class="space-y-2 text-sm">
+              <div class="text-stone-400 text-center py-4">Sélectionnez vos dates pour voir le détail</div>
+            </div>
+            <div id="price-total" class="hidden border-t border-stone-200 mt-4 pt-4">
+              <div class="flex justify-between font-bold text-stone-800">
+                <span>Total</span>
+                <span id="total-price">—</span>
+              </div>
+              <div class="text-xs text-stone-400 mt-1">Taxes et frais de ménage inclus</div>
+            </div>
+
+            <!-- Cancellation policy -->
+            <div class="mt-4 bg-emerald-50 rounded-xl p-3 text-xs text-emerald-700">
+              <div class="font-semibold mb-0.5">↩ Annulation flexible</div>
+              <div>Remboursement intégral jusqu'à 7 jours avant l'arrivée.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body></html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – La Cabine du Cap d'Agde</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="/assets/icons/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="/src/styles/main.css" />
+</head>
+<body class="bg-stone-100 text-stone-800 min-h-screen">
+
+  <!-- ==================== LOGIN SCREEN ==================== -->
+  <div id="login-screen" class="hidden min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-sm">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-white font-bold">V</div>
+        <div>
+          <div class="font-serif font-bold text-stone-800">La Cabine du Cap d'Agde</div>
+          <div class="text-xs text-stone-400">Espace propriétaire</div>
+        </div>
+      </div>
+
+      <h1 class="text-xl font-bold text-stone-800 mb-6">Connexion</h1>
+
+      <div id="login-error" class="hidden mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3"></div>
+      <div id="login-success" class="hidden mb-4 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm rounded-xl px-4 py-3"></div>
+
+      <form id="login-form" novalidate>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-stone-700 mb-1.5">Email</label>
+          <input type="email" id="login-email" autocomplete="email"
+            class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition"
+            placeholder="proprietaire@email.fr" />
+        </div>
+        <div class="mb-6 relative">
+          <label class="block text-sm font-medium text-stone-700 mb-1.5">Mot de passe</label>
+          <input type="password" id="login-password" autocomplete="current-password"
+            class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition pr-12"
+            placeholder="••••••••" />
+          <button type="button" id="toggle-password"
+            class="absolute right-3 top-[38px] text-stone-400 hover:text-stone-600 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+          </button>
+        </div>
+        <button type="submit" id="login-btn"
+          class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+          <span id="login-btn-text">Se connecter</span>
+          <div id="login-spinner" class="loading-spinner hidden"></div>
+        </button>
+      </form>
+
+      <button id="forgot-password" class="mt-4 text-xs text-amber-600 hover:underline w-full text-center">
+        Mot de passe oublié ?
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN APP ==================== -->
+  <div id="admin-app" class="hidden">
+
+    <!-- Sidebar (desktop) + Top bar (mobile) -->
+    <div class="flex min-h-screen">
+
+      <!-- Sidebar -->
+      <aside id="sidebar" class="hidden lg:flex flex-col w-64 bg-white border-r border-stone-200 fixed top-0 bottom-0 left-0 z-30">
+        <div class="flex items-center gap-3 px-5 py-5 border-b border-stone-100">
+          <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-white font-bold text-sm">V</div>
+          <div>
+            <div class="font-serif font-semibold text-stone-800 text-sm">La Cabine du Cap d'Agde</div>
+            <div class="text-xs text-stone-400" id="admin-email-display"></div>
+          </div>
+        </div>
+
+        <nav class="flex-1 px-3 py-4 space-y-1">
+          <button data-section="dashboard" class="admin-nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-stone-700 hover:bg-stone-50">
+            <span class="text-lg">📊</span> Dashboard
+          </button>
+          <button data-section="reservations" class="admin-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-stone-700 hover:bg-stone-50">
+            <span class="text-lg">📅</span> Réservations
+          </button>
+          <button data-section="push" class="admin-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-stone-700 hover:bg-stone-50">
+            <span class="text-lg">🔔</span> Notifications push
+          </button>
+          <button data-section="guests" class="admin-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-stone-700 hover:bg-stone-50">
+            <span class="text-lg">👥</span> Voyageurs
+          </button>
+        </nav>
+
+        <div class="px-3 pb-5">
+          <a href="/" target="_blank"
+            class="flex items-center gap-2 px-3 py-2.5 text-sm text-stone-500 hover:text-stone-700 transition">
+            <span>🌐</span> Voir le site
+          </a>
+          <button id="logout-btn"
+            class="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-stone-500 hover:text-red-600 transition">
+            <span>🚪</span> Déconnexion
+          </button>
+        </div>
+      </aside>
+
+      <!-- Mobile top bar -->
+      <div class="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-stone-200 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center text-white font-bold text-xs">V</div>
+          <span class="font-serif font-semibold text-sm text-stone-800">Admin</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="mobile-nav-btn" class="p-2 text-stone-500">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile nav drawer -->
+      <div id="mobile-nav" class="hidden lg:hidden fixed inset-0 z-40">
+        <div class="absolute inset-0 bg-black/40" id="mobile-nav-overlay"></div>
+        <div class="absolute top-0 left-0 bottom-0 w-64 bg-white shadow-xl">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-stone-100">
+            <span class="font-serif font-semibold text-stone-800">Menu</span>
+            <button id="close-mobile-nav" class="text-stone-400 p-1">✕</button>
+          </div>
+          <nav class="px-3 py-4 space-y-1">
+            <button data-section="dashboard" class="admin-nav-item-mobile w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-700">
+              <span>📊</span> Dashboard
+            </button>
+            <button data-section="reservations" class="admin-nav-item-mobile w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-700">
+              <span>📅</span> Réservations
+            </button>
+            <button data-section="push" class="admin-nav-item-mobile w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-700">
+              <span>🔔</span> Notifications push
+            </button>
+            <button data-section="guests" class="admin-nav-item-mobile w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-700">
+              <span>👥</span> Voyageurs
+            </button>
+          </nav>
+          <div class="px-3 pb-5 border-t border-stone-100 mt-2 pt-4">
+            <button id="mobile-logout-btn" class="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-500">
+              🚪 Déconnexion
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <main class="flex-1 lg:ml-64 pt-16 lg:pt-0 min-h-screen">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+          <!-- ====== SECTION: DASHBOARD ====== -->
+          <section id="section-dashboard" class="admin-section">
+            <div class="mb-6">
+              <h1 class="font-serif text-2xl font-bold text-stone-800">Bonjour 👋</h1>
+              <p class="text-stone-500 text-sm mt-1">Vue d'ensemble de votre villa</p>
+            </div>
+
+            <!-- Stats cards -->
+            <div id="stats-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <!-- Filled by JS -->
+              <div class="bg-white rounded-2xl p-5 animate-pulse h-28 col-span-2 lg:col-span-4"></div>
+            </div>
+
+            <!-- Next booking card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-5 mb-6">
+              <h2 class="font-semibold text-stone-700 mb-4">Prochaine arrivée</h2>
+              <div id="next-booking-card" class="text-stone-400 text-sm">Chargement…</div>
+            </div>
+
+            <!-- Quick actions -->
+            <div class="grid sm:grid-cols-2 gap-4">
+              <button data-section="push" class="admin-nav-item bg-amber-500 hover:bg-amber-600 text-white rounded-2xl p-5 text-left transition shadow-lg">
+                <div class="text-2xl mb-2">🔔</div>
+                <div class="font-semibold">Envoyer une notification</div>
+                <div class="text-amber-100 text-sm mt-1">Broadcast à tous vos voyageurs abonnés</div>
+              </button>
+              <a href="/reservation.html" target="_blank"
+                class="bg-white rounded-2xl p-5 text-left border border-stone-100 hover:shadow-md transition">
+                <div class="text-2xl mb-2">📋</div>
+                <div class="font-semibold text-stone-800">Voir la page de réservation</div>
+                <div class="text-stone-400 text-sm mt-1">Ouvrir le formulaire voyageur</div>
+              </a>
+            </div>
+          </section>
+
+          <!-- ====== SECTION: RESERVATIONS ====== -->
+          <section id="section-reservations" class="admin-section hidden">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h1 class="font-serif text-2xl font-bold text-stone-800">Réservations</h1>
+                <p class="text-stone-500 text-sm mt-1">Toutes les réservations confirmées</p>
+              </div>
+              <div class="flex gap-2">
+                <select id="booking-status-filter"
+                  class="border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-amber-400">
+                  <option value="confirmed">Confirmées</option>
+                  <option value="pending">En attente</option>
+                  <option value="cancelled">Annulées</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead class="bg-stone-50 border-b border-stone-100">
+                    <tr>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Réf.</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Voyageur</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider hidden sm:table-cell">Email</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Dates</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Montant</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Statut</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bookings-table-body" class="divide-y divide-stone-50">
+                    <tr><td colspan="6" class="px-4 py-8 text-center text-stone-400 text-sm">Chargement…</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- ====== SECTION: PUSH NOTIFICATIONS ====== -->
+          <section id="section-push" class="admin-section hidden">
+            <div class="mb-6">
+              <h1 class="font-serif text-2xl font-bold text-stone-800">Notifications push</h1>
+              <p class="text-stone-500 text-sm mt-1">Envoyez un message à vos voyageurs abonnés</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+              <!-- Compose form -->
+              <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+                <h2 class="font-semibold text-stone-800 mb-5">Composer un message</h2>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">Destinataires</label>
+                  <select id="push-target"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400">
+                    <option value="all">Tous les voyageurs abonnés</option>
+                    <option value="current">Séjour en cours uniquement</option>
+                    <option value="upcoming">Arrivée dans les 7 jours</option>
+                    <option value="past">Anciens voyageurs (fidélisation)</option>
+                  </select>
+                  <div class="mt-1.5 text-xs text-stone-400">
+                    <span id="push-recipient-count">Calcul en cours…</span>
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">Titre *</label>
+                  <input type="text" id="push-title" maxlength="65"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition"
+                    placeholder="Ex: 🌞 Nos disponibilités cet été !" />
+                  <div class="text-right text-xs text-stone-300 mt-1"><span id="title-count">0</span>/65</div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">Message *</label>
+                  <textarea id="push-body" rows="3" maxlength="200"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition resize-none"
+                    placeholder="Ex: Les semaines de juillet sont disponibles. Réservez dès maintenant et profitez de votre tarif fidèle !"></textarea>
+                  <div class="text-right text-xs text-stone-300 mt-1"><span id="body-count">0</span>/200</div>
+                </div>
+
+                <div class="mb-6">
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">Lien (optionnel)</label>
+                  <input type="url" id="push-url" value="/"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition"
+                    placeholder="https://villa-les-oliviers.fr/reservation.html" />
+                </div>
+
+                <div id="push-result" class="hidden mb-4 rounded-xl p-3 text-sm"></div>
+
+                <button id="send-push-btn"
+                  class="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-amber-200 text-white font-semibold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                  <span>🔔</span>
+                  <span id="send-push-text">Envoyer la notification</span>
+                  <div id="send-push-spinner" class="loading-spinner hidden"></div>
+                </button>
+              </div>
+
+              <!-- Preview + tips -->
+              <div class="space-y-4">
+                <!-- Phone preview -->
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+                  <h2 class="font-semibold text-stone-800 mb-4">Aperçu</h2>
+                  <div class="bg-stone-800 rounded-2xl p-4 text-white max-w-xs mx-auto">
+                    <div class="flex items-start gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">V</div>
+                      <div class="flex-1">
+                        <div class="font-semibold text-xs text-white/70 mb-0.5">La Cabine du Cap d'Agde</div>
+                        <div id="preview-title" class="font-semibold text-sm leading-tight">Titre du message</div>
+                        <div id="preview-body" class="text-white/70 text-xs mt-1 leading-relaxed">Corps du message…</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tips -->
+                <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+                  <h3 class="font-semibold text-amber-800 mb-3 text-sm">💡 Conseils pour un bon message</h3>
+                  <ul class="text-xs text-amber-700 space-y-2">
+                    <li>• Utilisez des emojis pour capter l'attention</li>
+                    <li>• Soyez concis — max 2 phrases dans le corps</li>
+                    <li>• Envoyez en semaine entre 10h et 19h</li>
+                    <li>• Idées : disponibilités saisonnières, promo semaine non réservée, message de remerciement</li>
+                  </ul>
+                </div>
+
+                <!-- Historique simple -->
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-5">
+                  <h3 class="font-semibold text-stone-800 mb-3 text-sm">Derniers envois</h3>
+                  <div id="push-history" class="text-xs text-stone-400 text-center py-3">Aucun envoi récent</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ====== SECTION: GUESTS ====== -->
+          <section id="section-guests" class="admin-section hidden">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+              <div>
+                <h1 class="font-serif text-2xl font-bold text-stone-800">Voyageurs</h1>
+                <p id="guests-subtitle" class="text-stone-500 text-sm mt-1">Base de données fidélité</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <label class="flex items-center gap-2 text-sm text-stone-600 cursor-pointer">
+                  <input type="checkbox" id="filter-subscribed" class="rounded text-amber-500" />
+                  Abonnés push seulement
+                </label>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead class="bg-stone-50 border-b border-stone-100">
+                    <tr>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Voyageur</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider hidden sm:table-cell">Dernier séjour</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider hidden md:table-cell">Séjours</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Push</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider hidden md:table-cell">Marketing</th>
+                    </tr>
+                  </thead>
+                  <tbody id="guests-table-body" class="divide-y divide-stone-50">
+                    <tr><td colspan="5" class="px-4 py-8 text-center text-stone-400 text-sm">Chargement…</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="px-4 py-3 border-t border-stone-100 text-xs text-stone-400 text-right" id="guests-count"></div>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="/src/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==================== HELPERS ====================
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // ==================== USERS (rôles admin) ====================
+    match /users/{uid} {
+      // Lecture : seulement soi-même ou admin
+      allow read: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+      // Écriture : uniquement admin SDK (Cloud Functions) ou premier setup
+      allow write: if false;
+    }
+
+    // ==================== RESERVATIONS ====================
+    match /reservations/{bookingId} {
+      // Lecture publique pour les réservations confirmées (portail invité)
+      allow read: if resource.data.status == 'confirmed';
+      // Admin peut tout lire
+      allow read: if isAdmin();
+      // Écriture uniquement Cloud Functions (admin SDK)
+      allow write: if false;
+    }
+
+    // ==================== AVAILABILITY ====================
+    match /availability/{date} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ==================== GUESTS (base fidélité) ====================
+    match /guests/{email} {
+      // Lecture + écriture réservée à l'admin
+      allow read, write: if isAdmin();
+      // Écriture backend (admin SDK) toujours autorisée
+    }
+
+    // ==================== PUSH HISTORY ====================
+    match /push_history/{id} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // ==================== CONFIG ====================
+    match /config/{doc} {
+      // Lecture publique sauf les docs sensibles
+      allow read: if doc != 'wifi' && doc != 'owner' && doc != 'secrets';
+      // Config publique accessible par l'admin
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Tout le reste : refusé par défaut
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
