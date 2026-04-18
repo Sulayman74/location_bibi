@@ -1,4 +1,4 @@
-name: Deploy to Firebase
+name: Deploy to Firebase Hosting
 
 on:
   push:
@@ -21,27 +21,23 @@ jobs:
       - name: Install Frontend Dependencies
         run: npm ci
 
-      - name: Install Functions Dependencies
-        working-directory: functions
-        run: npm ci
-      
-      - name: Create backend .env file
-        working-directory: functions
-        run: |
-          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" > .env
-          echo "STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}" >> .env
-          echo "ZODOMUS_API_KEY=${{ secrets.ZODOMUS_API_KEY }}" >> .env
-          echo "ZODOMUS_CHANNEL_ID=${{ secrets.ZODOMUS_CHANNEL_ID }}" >> .env
-
       - name: Build Frontend
         run: npm run build
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
           VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-          # ... (vos autres variables d'environnement) ...
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}
+          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
+          VITE_FUNCTIONS_BASE_URL: ${{ secrets.VITE_FUNCTIONS_BASE_URL }}
+          VITE_FCM_VAPID_KEY: ${{ secrets.VITE_FCM_VAPID_KEY }}
+          VITE_GOOGLE_PLACE_ID: ${{ secrets.VITE_GOOGLE_PLACE_ID }}
+          VITE_AIRBNB_LISTING_ID: ${{ secrets.VITE_AIRBNB_LISTING_ID }}
 
-      # 1. On utilise l'auth officielle Google (comme sur les snacks)
+      # 1. On utilise l'auth officielle Google
       - name: Google auth
         uses: google-github-actions/auth@v2
         with:
@@ -51,6 +47,6 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      # 3. On déploie uniquement ce qu'on veut (Hosting et Functions)
-      - name: Deploy Hosting & Functions
-        run: firebase deploy --only hosting,functions --project locationbibi
+      # 3. On déploie UNIQUEMENT le Hosting (le site)
+      - name: Deploy Hosting ONLY
+        run: firebase deploy --only hosting --project locationbibi
