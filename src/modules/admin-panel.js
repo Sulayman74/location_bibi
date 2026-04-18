@@ -6,12 +6,21 @@
  * - Gestion de la base voyageurs (loyalty)
  */
 import {
-  collection, query, where, orderBy, limit,
-  getDocs, doc, getDoc, updateDoc,
-  Timestamp, onSnapshot,
+  Timestamp,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+  where,
 } from 'firebase/firestore'
-import { httpsCallable } from 'firebase/functions'
 import { db, functions } from './firebase-config.js'
+
+import { httpsCallable } from 'firebase/functions'
 
 // ==================== STATS ====================
 
@@ -171,6 +180,16 @@ export function renderBookingRow(booking) {
     failed:     'bg-stone-100 text-stone-500',
   }[status] || 'bg-stone-100 text-stone-500'
 
+  // 👇 GESTION SÉCURISÉE DU BOUTON DOCUMENT 👇
+// Remplacez la logique du bouton docHtml par ceci :
+let docHtml = '<span class="text-xs text-stone-400">—</span>';
+if (booking.idDocumentPath) {
+  // L'admin utilisera ce chemin interne
+  docHtml = `<button type="button" data-action="view-id" data-path="${booking.idDocumentPath}" class="text-blue-500 hover:text-blue-700 underline text-xs font-medium cursor-pointer">Voir la pièce</button>`;
+} else if (status === 'confirmed') {
+  docHtml = `<span class="text-xs text-amber-500">En attente</span>`;
+}
+
   return `
     <tr class="hover:bg-stone-50 transition">
       <td class="px-4 py-3 text-xs font-mono text-amber-600 font-semibold">#${booking.id}</td>
@@ -183,6 +202,9 @@ export function renderBookingRow(booking) {
       <td class="px-4 py-3 text-sm font-semibold text-stone-800">${((booking.amount || 0) / 100).toLocaleString('fr-FR')}€</td>
       <td class="px-4 py-3">
         <span class="text-xs font-medium px-2.5 py-1 rounded-full ${statusClass}">${status}</span>
+      </td>
+      <td class="px-4 py-3">
+        ${docHtml}
       </td>
     </tr>
   `
@@ -197,10 +219,10 @@ export function renderGuestRow(guest) {
       <td class="px-4 py-3">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-            ${(guest.firstName?.[0] || '?') + (guest.lastName?.[0] || '')}
+            ${(guest.firstname?.[0] || '?') + (guest.lastname?.[0] || '')}
           </div>
           <div>
-            <div class="text-sm font-medium text-stone-800">${guest.firstName || ''} ${guest.lastName || ''}</div>
+            <div class="text-sm font-medium text-stone-800">${guest.firstname || ''} ${guest.lastname || ''}</div>
             <div class="text-xs text-stone-400">${guest.email || ''}</div>
           </div>
         </div>
@@ -241,4 +263,18 @@ function startOfMonth() {
   d.setDate(1)
   d.setHours(0, 0, 0, 0)
   return d
+}
+// Fonction utilitaire à placer dans admin-panel.js
+function sanitizeUrl(url) {
+  if (!url) return '';
+  try {
+    const parsed = new URL(url);
+    // On n'accepte QUE le http ou https (bloque 'javascript:', 'data:', etc.)
+    if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+      return parsed.href;
+    }
+  } catch (e) {
+    return ''; // Si l'URL est malformée, on retourne une chaîne vide
+  }
+  return '';
 }

@@ -2,20 +2,24 @@
  * admin.js — Entry point portail administrateur
  */
 import './styles/main.css'
-import { signIn, signOut, resetPassword, requireAdmin, onAuthChange } from './modules/auth.js'
+
 import {
-  loadDashboardStats,
-  loadReservations,
-  subscribeToUpcomingBookings,
-  loadGuests,
-  getGuestStats,
   broadcastPushNotification,
+  getGuestStats,
+  loadDashboardStats,
+  loadGuests,
+  loadReservations,
   previewBroadcastCount,
-  renderStatsCards,
   renderBookingRow,
   renderGuestRow,
+  renderStatsCards,
+  subscribeToUpcomingBookings,
 } from './modules/admin-panel.js'
+import { getDownloadURL, ref } from 'firebase/storage';
+import { isAdmin, onAuthChange, resetPassword, signIn, signOut } from './modules/auth.js'
+
 import { initPageTransitions } from './modules/transitions.js'
+import { storage } from './modules/firebase-config.js';
 
 // ==================== BOOT ====================
 
@@ -29,16 +33,38 @@ async function init() {
       showLogin()
       return
     }
-    try {
-      await requireAdmin() // lève une erreur si pas admin
-      showApp(user)
-    } catch {
+    const admin = await isAdmin(user.uid)
+    if (!admin) {
       showLogin('unauthorized')
+      return
     }
+    showApp(user)
   })
 
   // Si on arrive avec ?login=1 → afficher la page login directement
   if (params.get('login')) showLogin(params.get('reason'))
+    
+    document.getElementById('bookings-table-body')?.addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-action="view-id"]');
+  if (btn) {
+    e.preventDefault();
+    const path = btn.getAttribute('data-path');
+    
+    if (path) {
+      try {
+        btn.textContent = "Chargement...";
+        // L'admin étant connecté, Firebase acceptera de donner l'URL
+        const url = await getDownloadURL(ref(storage, path));
+        window.open(url, '_blank', 'noopener,noreferrer');
+        btn.textContent = "Voir la pièce";
+      } catch (err) {
+        console.error("Erreur d'accès au document:", err);
+        alert("Impossible de charger le document sécurisé.");
+        btn.textContent = "Voir la pièce";
+      }
+    }
+  }
+});
 }
 
 // ==================== LOGIN ====================
@@ -215,23 +241,25 @@ async function loadDashboard() {
 
 // ==================== RESERVATIONS ====================
 
-async function loadReservationsSection() {
-  const filter = document.getElementById('booking-status-filter')?.value || 'confirmed'
-  const tbody  = document.getElementById('bookings-table-body')
+async function loadReservationsSection(filter = 'confirmed') {
+  const tbody = document.getElementById('bookings-table-body')
   if (!tbody) return
 
-  tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-stone-400">Chargement…</td></tr>'
+  // 👇 1. Passe de 6 à 7 ici
+  tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-stone-400 text-sm">Chargement…</td></tr>'
 
   try {
     const bookings = await loadReservations(filter)
+    
+    // 👇 2. Et passe de 6 à 7 ici aussi
     tbody.innerHTML = bookings.length
       ? bookings.map(renderBookingRow).join('')
-      : '<tr><td colspan="6" class="px-4 py-8 text-center text-stone-400">Aucune réservation trouvée</td></tr>'
+      : '<tr><td colspan="7" class="px-4 py-8 text-center text-stone-400 text-sm">Aucune réservation</td></tr>'
+      
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-red-400">Erreur : ${err.message}</td></tr>`
+    // 👇 3. Pareil en cas d'erreur (si la ligne existe)
+    tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-red-400">Erreur : ${err.message}</td></tr>`
   }
-
-  document.getElementById('booking-status-filter')?.addEventListener('change', loadReservationsSection)
 }
 
 // ==================== PUSH ====================
@@ -347,7 +375,11 @@ async function loadGuestsSection() {
   try {
     const [guests, stats] = await Promise.all([loadGuests({ onlySubscribed }), getGuestStats()])
 
-    if (statsEl) statsEl.textContent = `${stats.total} voyageurs · ${stats.subscribed} abonnés push`
+    if (statsEl) {
+      const v = stats.total > 1 ? 'voyageurs' : 'voyageur'
+      const a = stats.subscribed > 1 ? 'abonnés' : 'abonné'
+      statsEl.textContent = `${stats.total} ${v} · ${stats.subscribed} ${a} push`
+    }
 
     tbody.innerHTML = guests.length
       ? guests.map(renderGuestRow).join('')

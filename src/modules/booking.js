@@ -3,7 +3,8 @@
  * Gestion du tunnel de réservation multi-étapes + paiement Stripe
  */
 
-import { STRIPE_PUBLISHABLE_KEY, FUNCTIONS_BASE_URL, PROPERTY_CONFIG } from './firebase-config.js';
+import { FUNCTIONS_BASE_URL, PROPERTY_CONFIG, STRIPE_PUBLISHABLE_KEY } from './firebase-config.js';
+
 import { getSelectedDates } from './calendar.js';
 
 let stripe = null;
@@ -197,8 +198,11 @@ async function handlePayment() {
         }
       })
     });
-
-    if (!intentRes.ok) throw new Error(`Server error: ${intentRes.status}`);
+    if (!intentRes.ok) {
+  // On lit la réponse JSON renvoyée par ton serveur (qui contient l'erreur Stripe)
+  const errorData = await intentRes.json();
+  throw new Error(`${errorData.error}`);
+}
     const { clientSecret, bookingId } = await intentRes.json();
 
     // 2. Confirm card payment with Stripe

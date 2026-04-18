@@ -38,14 +38,19 @@ export function resetPassword(email) {
 
 export async function getUserRole(uid) {
   if (_cachedRole) return _cachedRole
-  const snap = await getDoc(doc(db, 'users', uid))
+  const ref  = doc(db, 'users', uid)
+  console.log('[getUserRole] lecture doc path:', ref.path)
+  const snap = await getDoc(ref)
+  console.log('[getUserRole] exists:', snap.exists(), '| data:', snap.data())
   if (!snap.exists()) return null
   _cachedRole = snap.data().role || null
+  console.log('[getUserRole] role =', _cachedRole)
   return _cachedRole
 }
 
 export async function isAdmin(uid) {
   const role = await getUserRole(uid)
+  console.log('[isAdmin] uid:', uid, '| role:', role, '| result:', role === 'admin')
   return role === 'admin'
 }
 
@@ -77,15 +82,4 @@ function redirectToLogin(reason = '') {
 
 export function onAuthChange(callback) {
   return onAuthStateChanged(auth, callback)
-}
-
-// ==================== FIRST ADMIN SETUP ====================
-// À appeler une seule fois en console pour créer le premier compte admin
-
-export async function createAdminUser(uid, email) {
-  await setDoc(doc(db, 'users', uid), {
-    email,
-    role: 'admin',
-    createdAt: serverTimestamp(),
-  })
 }

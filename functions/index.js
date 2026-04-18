@@ -80,19 +80,25 @@ exports.createPaymentIntent = onRequest(
       accessCode,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
+try {
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount,
+    currency: currency || 'eur',
+    metadata: { ...metadata, bookingId, accessCode },
+    receipt_email: metadata.guestEmail,
+    description: `La Cabine du Cap d'Agde – ${metadata.checkIn} au ${metadata.checkOut}`,
+  });
 
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency: currency || 'eur',
-      metadata: { ...metadata, bookingId, accessCode },
-      receipt_email: metadata.guestEmail,
-      description: `La Cabine du Cap d'Agde – ${metadata.checkIn} au ${metadata.checkOut}`,
-      statement_descriptor: 'Cabine Studio',
-    });
-
-    res.json({ clientSecret: paymentIntent.client_secret, bookingId });
-  }
-);
+  res.json({ clientSecret: paymentIntent.client_secret, bookingId });
+  
+} catch (error) {
+  // Si Stripe refuse, on affiche la VRAIE erreur dans la console
+      console.error("Erreur Stripe détaillée :", error);
+      
+      // On renvoie la vraie erreur à ton site (et plus une erreur 500 générique)
+      res.status(400).json({ error: error.message });
+    }
+  });
 
 // ==================== 2. STRIPE WEBHOOK ====================
 
@@ -786,6 +792,7 @@ exports.syncGuestFcmToken = onRequest(
 // ==================== 10. BROADCAST PUSH NOTIFICATION (callable sécurisée) ====================
 
 exports.broadcastPushNotification = onCall(
+  {region: 'europe-west1'},
   async (request) => {
     // 1. Vérifier auth
     if (!request.auth) {
@@ -841,7 +848,7 @@ exports.broadcastPushNotification = onCall(
 );
 
 exports.previewBroadcastCount = onCall(
-  {},
+  {region:"europe-west1"},
   async (request) => {
     if (!request.auth) throw new Error('unauthenticated');
     const userSnap = await db.collection('users').doc(request.auth.uid).get();
