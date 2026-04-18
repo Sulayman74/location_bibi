@@ -181,7 +181,7 @@ function showInAppNotification(title, body, data) {
   toast.className = 'fixed top-20 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 bg-white rounded-2xl shadow-2xl p-4 border border-stone-200 animate-slide-up'
   toast.innerHTML = `
     <div class="flex items-start gap-3">
-      <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">V</div>
+      <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">KP</div>
       <div class="flex-1 min-w-0">
         <div class="font-semibold text-stone-800 text-sm">${title || "La Cabine du Cap d'Agde"}</div>
         <div class="text-xs text-stone-500 mt-0.5">${body || ''}</div>

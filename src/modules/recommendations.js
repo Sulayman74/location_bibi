@@ -222,10 +222,13 @@ export function initRecommendationTabs(tabsId = 'rec-tabs', contentId = 'rec-con
 
     const category = btn.dataset.tab;
     tabsEl.querySelectorAll('.rec-tab').forEach(t => {
+      t.classList.remove('text-white') // purge la classe initiale HTML
       t.classList.toggle('bg-amber-500', t === btn);
-      t.classList.toggle('text-white', t === btn);
+      t.classList.toggle('text-stone-900', t === btn);
+      t.classList.toggle('font-semibold', t === btn);
       t.classList.toggle('bg-white', t !== btn);
       t.classList.toggle('text-stone-600', t !== btn);
+      t.classList.toggle('font-medium', t !== btn);
     });
 
     renderRecommendations(contentId, category);
