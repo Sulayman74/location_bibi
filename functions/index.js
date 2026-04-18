@@ -118,7 +118,7 @@ exports.stripeWebhook = onRequest(
 
     switch (event.type) {
       case 'payment_intent.succeeded':
-        await handlePaymentSuccess(event.data.object, stripe);
+        await handlePaymentSuccessWithLoyalty(event.data.object, stripe);
         break;
       case 'payment_intent.payment_failed':
         await handlePaymentFailed(event.data.object);
