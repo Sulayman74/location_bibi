@@ -197,19 +197,18 @@ function showInAppNotification(title, body, data) {
 
 // ==================== QR CODE ====================
 
-export function generateQRCode(containerId, url) {
+export async function generateQRCode(containerId, url) {
   const container = document.getElementById(containerId)
   if (!container) return
 
-  const encodedUrl = encodeURIComponent(url)
-  const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${encodedUrl}&choe=UTF-8&chld=M|2`
-
-  const img = document.createElement('img')
-  img.src = qrUrl
-  img.alt = 'QR Code de partage'
-  img.className = 'w-24 h-24 rounded-xl'
-  img.loading = 'lazy'
-
-  container.innerHTML = ''
-  container.appendChild(img)
+  try {
+    const QRCode = (await import('qrcode')).default
+    const canvas = document.createElement('canvas')
+    await QRCode.toCanvas(canvas, url, { width: 160, margin: 1, color: { dark: '#1c1917', light: '#fafaf9' } })
+    canvas.className = 'rounded-lg'
+    container.innerHTML = ''
+    container.appendChild(canvas)
+  } catch (e) {
+    console.error('[QR] generation failed:', e)
+  }
 }

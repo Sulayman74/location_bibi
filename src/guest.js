@@ -27,16 +27,23 @@ function navigateToTab(tabId) {
   
   document.querySelectorAll('[data-tab-target]').forEach(t => {
     const isActive = t.dataset.tabTarget === tabId
-    
+
     if (t.classList.contains('floating-nav-btn')) {
       t.classList.toggle('active', isActive)
-      // Show/hide label
       const label = t.querySelector('.floating-nav-label')
       if (label) label.classList.toggle('hidden', !isActive)
     } else {
-      // Handle desktop/other tabs if any
       t.classList.toggle('active', isActive)
-      t.classList.toggle('text-stone-500', !isActive)
+      t.classList.remove('bg-amber-500', 'text-stone-900', 'text-stone-500', 'font-semibold')
+      if (isActive) {
+        t.style.backgroundColor = '#f59e0b'
+        t.style.color = '#1c1917'
+        t.style.fontWeight = '600'
+      } else {
+        t.style.backgroundColor = '#ffffff'
+        t.style.color = '#78716c'
+        t.style.fontWeight = '500'
+      }
     }
   })
 }
@@ -76,15 +83,10 @@ async function init() {
     smartReviewRequest(booking, PROPERTY_CONFIG.googlePlaceId)
     startCheckinCountdown(booking.checkIn)
 
-    // QR code de partage
-    try {
-      const shareUrl = `${window.location.origin}/guest.html?booking=${booking.id}`
-      generateQRCode('qr-container', shareUrl)
-    } catch (e) { console.warn('QR code generation failed') }
-
     // Code boîte à clés
+    console.log('[guest] booking fields:', JSON.stringify(booking))
     const keyEl = document.getElementById('key-code')
-    if (keyEl && booking.keyCode) keyEl.textContent = booking.keyCode
+    if (keyEl) keyEl.textContent = booking.keyCode || '—'
 
     // Remplir le profil
     const profileName = document.getElementById('profile-name')
@@ -153,10 +155,10 @@ function initCodeForm() {
 }
 
 function initTabs() {
-  // Un seul listener délégué sur document — capte clics venant des nav-tabs ET du bottom-nav
   document.addEventListener('click', e => {
     const tab = e.target.closest('[data-tab-target]')
     if (!tab) return
+    console.log('[tab] clicked:', tab.dataset.tabTarget, '| isFloating:', tab.classList.contains('floating-nav-btn'))
     navigateToTab(tab.dataset.tabTarget)
   })
 }

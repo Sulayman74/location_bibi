@@ -76,7 +76,7 @@
 
   /* Tab */
   .nav-tab.active {
-    @apply bg-amber-500 text-white;
+    @apply bg-amber-500 text-stone-900 font-semibold;
   }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }

@@ -21,6 +21,7 @@ import {
   where,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { generateQRCode } from "./pwa.js";
 
 const WIFI_WINDOW_HOURS = PROPERTY_CONFIG.wifiAccessWindowHours; // 2h
 
@@ -195,6 +196,12 @@ function showWifiUnlocked(ssid, password) {
   }
 
   setupWifiButtons(password, ssid);
+
+  // QR code WiFi — format standard reconnu par iOS et Android
+  const qrCard = document.getElementById("wifi-qr-card")
+  console.log('[WiFi] qrCard found:', !!qrCard, '| ssid:', ssid)
+  if (qrCard) qrCard.classList.remove("hidden")
+  generateQRCode("qr-container", `WIFI:T:WPA;S:${ssid};P:${password};;`)
 }
 
 // ==================== WIFI BUTTONS — délégation sur le container ====================

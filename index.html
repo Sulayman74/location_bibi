@@ -98,7 +98,7 @@
           <a href="#alentours" class="text-white/90 hover:text-white transition">Alentours</a>
           <a href="#avis" class="text-white/90 hover:text-white transition">Avis</a>
           <a href="/reservation.html" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full font-semibold transition shadow-lg">
-            Réserver →
+            Réserver 
           </a>
         </div>
 
@@ -119,7 +119,7 @@
         <a href="#alentours" class="block py-2 text-stone-700 font-medium">Alentours</a>
         <a href="#avis" class="block py-2 text-stone-700 font-medium">Avis</a>
         <a href="/reservation.html" class="block mt-3 bg-amber-500 text-white text-center py-3 rounded-xl font-semibold">
-          Réserver maintenant →
+          Réserver maintenant 
         </a>
       </div>
     </div>
@@ -166,7 +166,7 @@
           <a href="/reservation.html"
             class="group bg-amber-500 hover:bg-amber-400 text-white font-bold px-8 py-4 rounded-2xl text-lg shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-amber-500/40">
             Vérifier les disponibilités
-            <span class="ml-2 group-hover:translate-x-1 inline-block transition-transform">→</span>
+            <span class="ml-2 group-hover:translate-x-1 inline-block transition-transform"></span>
           </a>
           <a href="#logement"
             class="glass text-stone-800 font-semibold px-6 py-4 rounded-2xl text-base border border-white/30 hover:bg-white/95 transition">
@@ -209,7 +209,7 @@
         </div>
         <a href="/reservation.html"
           class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition shadow-lg text-center">
-          Réserver maintenant →
+          Réserver maintenant 
         </a>
       </div>
     </div>
@@ -218,14 +218,23 @@
   <!-- ==================== LOGEMENT ==================== -->
   <section id="logement" class="py-12 max-w-6xl mx-auto px-4 sm:px-6">
     <div class="grid lg:grid-cols-2 gap-12 items-center">
-      <!-- Photos Grid -->
+      <!-- Photos Grid with gallery trigger -->
       <div class="grid grid-cols-2 gap-3">
-        <img src="https://a0.muscache.com/im/pictures/hosting/Hosting-602554771321363177/original/2a1310e3-d4a5-417d-9596-cb9f535d013f.jpeg?im_w=1920"
-          alt="Piscine de la résidence studio" class="col-span-2 rounded-2xl w-full h-56 object-cover shadow-lg" loading="lazy" />
-        <img src="https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6NjAyNTU0NzcxMzIxMzYzMTc3/original/af4a4b87-3590-4bcc-81bc-b6fa00eff894.jpeg?im_w=1920"
-          alt="Chambre principale" class="rounded-xl w-full h-36 object-cover shadow" loading="lazy" />
-        <img src="https://a0.muscache.com/im/pictures/hosting/Hosting-602554771321363177/original/56a94760-e812-4558-9076-b888f1841681.jpeg?im_w=1920"
-          alt="Cuisine moderne" class="rounded-xl w-full h-36 object-cover shadow" loading="lazy" />
+        <img src="https://a0.muscache.com/im/pictures/miso/Hosting-602554771321363177/original/d84f29f9-f71c-42b0-b43e-06c5e1aa960f.jpeg?im_w=1920"
+          alt="Piscine de la résidence studio"
+          class="col-span-2 rounded-2xl w-full h-56 object-cover shadow-lg cursor-pointer hover:opacity-90 transition gallery-thumb"
+          data-index="0" loading="lazy" />
+        <img src="https://a0.muscache.com/im/pictures/hosting/Hosting-602554771321363177/original/0af754f0-07f7-483d-a7c0-2d04018b5f7f.jpeg?im_w=1200&im_q=medq"
+          alt="Chambre principale"
+          class="rounded-xl w-full h-36 object-cover shadow cursor-pointer hover:opacity-90 transition gallery-thumb"
+          data-index="1" loading="lazy" />
+        <div class="relative rounded-xl overflow-hidden shadow cursor-pointer hover:opacity-90 transition gallery-thumb" data-index="2">
+          <img src="https://a0.muscache.com/im/pictures/miso/Hosting-602554771321363177/original/ae98e932-05b4-4fe2-9a3d-92a9200b68f6.jpeg?im_w=1920"
+            alt="Cuisine moderne" class="w-full h-36 object-cover" loading="lazy" />
+          <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <span class="text-white font-semibold text-sm">Voir toutes les photos</span>
+          </div>
+        </div>
       </div>
 
       <!-- Description -->
@@ -331,7 +340,7 @@
         <div class="mt-6 text-center">
           <a href="/reservation.html" id="calendar-cta"
             class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 py-3 rounded-xl transition shadow-lg">
-            Continuer la réservation →
+            Continuer la réservation 
           </a>
         </div>
       </div>
@@ -385,7 +394,7 @@
 
       <!-- Tabs -->
       <div class="flex flex-wrap justify-center gap-2 mb-8" id="rec-tabs">
-        <button data-tab="plages" class="rec-tab active px-4 py-2 rounded-full text-sm font-medium bg-amber-500 text-stone-600 transition">🏖 Plages</button>
+        <button data-tab="plages" class="rec-tab active px-4 py-2 rounded-full text-sm font-semibold bg-amber-500 text-stone-900 transition">🏖 Plages</button>
         <button data-tab="restaurants" class="rec-tab px-4 py-2 rounded-full text-sm font-medium bg-white text-stone-600 hover:bg-amber-50 transition">🍽 Restaurants</button>
         <button data-tab="activites" class="rec-tab px-4 py-2 rounded-full text-sm font-medium bg-white text-stone-600 hover:bg-amber-50 transition">🎯 Activités</button>
         <button data-tab="commerces" class="rec-tab px-4 py-2 rounded-full text-sm font-medium bg-white text-stone-600 hover:bg-amber-50 transition">🛒 Commerces</button>
@@ -518,6 +527,88 @@
       </div>
     </div>
   </div>
+
+  <!-- ==================== GALLERY LIGHTBOX ==================== -->
+  <div id="gallery-modal" class="fixed inset-0 z-50 bg-black/90 items-center justify-center" style="display:none" role="dialog" aria-modal="true">
+    <button id="gallery-close" class="absolute top-4 right-4 text-white/80 hover:text-white p-2" aria-label="Fermer">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <button id="gallery-prev" class="absolute left-4 text-white/80 hover:text-white p-2" aria-label="Précédente">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <button id="gallery-next" class="absolute right-4 text-white/80 hover:text-white p-2" aria-label="Suivante">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+    <div class="max-w-4xl w-full mx-4">
+      <img id="gallery-img" src="" alt="" class="w-full max-h-[80vh] object-contain rounded-xl" />
+      <p id="gallery-caption" class="text-white/70 text-center mt-3 text-sm"></p>
+      <p id="gallery-counter" class="text-white/50 text-center text-xs mt-1"></p>
+    </div>
+  </div>
+
+  <script>
+    const galleryImages = [
+      { src: "https://a0.muscache.com/im/pictures/miso/Hosting-602554771321363177/original/d84f29f9-f71c-42b0-b43e-06c5e1aa960f.jpeg?im_w=1920", alt: "Piscine de la résidence" },
+      { src: "https://a0.muscache.com/im/pictures/hosting/Hosting-602554771321363177/original/0af754f0-07f7-483d-a7c0-2d04018b5f7f.jpeg?im_w=1200&im_q=medq", alt: "Chambre principale" },
+      { src: "https://a0.muscache.com/im/pictures/miso/Hosting-602554771321363177/original/ae98e932-05b4-4fe2-9a3d-92a9200b68f6.jpeg?im_w=1920", alt: "Cuisine moderne" },
+      { src: "https://a0.muscache.com/im/pictures/hosting/Hosting-602554771321363177/original/5b2fa6bf-2143-4827-bf52-87ff41e8c940.jpeg?im_w=1200&im_q=medq", alt: "Salle de bain" },
+      { src: "https://a0.muscache.com/im/pictures/miso/Hosting-602554771321363177/original/7e1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d.jpeg?im_w=1920", alt: "Espace séjour" },
+      { src: "https://a0.muscache.com/im/pictures/hosting/Hosting-602554771321363177/original/a1b2c3d4-e5f6-7890-abcd-ef1234567890.jpeg?im_w=1200&im_q=medq", alt: "Vue depuis le balcon" },
+    ];
+
+    let currentIndex = 0;
+    const modal = document.getElementById('gallery-modal');
+    const img = document.getElementById('gallery-img');
+    const caption = document.getElementById('gallery-caption');
+    const counter = document.getElementById('gallery-counter');
+
+    function openGallery(index) {
+      currentIndex = index;
+      showImage();
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeGallery() {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function showImage() {
+      const item = galleryImages[currentIndex];
+      img.src = item.src;
+      img.alt = item.alt;
+      caption.textContent = item.alt;
+      counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+    }
+
+    document.querySelectorAll('.gallery-thumb').forEach(el => {
+      el.addEventListener('click', () => openGallery(parseInt(el.dataset.index)));
+    });
+
+    document.getElementById('gallery-close').addEventListener('click', closeGallery);
+    document.getElementById('gallery-prev').addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+      showImage();
+    });
+    document.getElementById('gallery-next').addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % galleryImages.length;
+      showImage();
+    });
+    modal.addEventListener('click', e => { if (e.target === modal) closeGallery(); });
+    document.addEventListener('keydown', e => {
+      if (modal.classList.contains('hidden')) return;
+      if (e.key === 'Escape') closeGallery();
+      if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length; showImage(); }
+      if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % galleryImages.length; showImage(); }
+    });
+  </script>
 
   <script type="module" src="/src/main.js"></script>
 </body>

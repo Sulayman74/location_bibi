@@ -10,7 +10,8 @@
     "deploy": "npm run build && firebase deploy"
   },
   "dependencies": {
-    "firebase": "^10.7.0"
+    "firebase": "^10.7.0",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",

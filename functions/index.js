@@ -352,7 +352,7 @@ async function getBlockedDatesFromZodomus() {
 // ==================== 5. GET WIFI CODE ====================
 
 exports.getWifiCode = onRequest(
-  { cors: [property.siteUrl],region: 'europe-west1' },
+  { cors: [property.siteUrl, 'http://localhost:5000'], region: 'europe-west1' },
   async (req, res) => {
     if (req.method !== 'POST') return res.status(405).end();
 
@@ -777,7 +777,7 @@ async function upsertGuest(bookingData) {
 // ==================== 9. SYNC FCM TOKEN VOYAGEUR → GUEST DOC ====================
 
 exports.syncGuestFcmToken = onRequest(
-  { cors: [property.siteUrl],region:'europe-west1' },
+  { cors: [property.siteUrl, 'http://localhost:5000'], region: 'europe-west1' },
   async (req, res) => {
     if (req.method !== 'POST') return res.status(405).end();
     const { bookingId, fcmToken } = req.body;

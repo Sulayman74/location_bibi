@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="/src/styles/main.css" />
 </head>
-<body class="bg-stone-100 text-stone-800 min-h-screen pb-24">
+<body class="bg-villa-warm text-stone-800 min-h-screen pb-24">
 
   <!-- Top Bar -->
   <header class="bg-white shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-40">
@@ -96,13 +96,13 @@
       </div>
 
       <!-- Unlocked state -->
-      <div id="wifi-unlocked" class="hidden wifi-card rounded-2xl shadow-lg p-5 text-white">
+      <div id="wifi-unlocked" class="hidden bg-stone-50 wifi-card rounded-2xl shadow-lg p-5 text-black">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-2">
             <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
             </svg>
-            <span class="font-semibold">WiFi de la villa</span>
+            <span class="font-semibold">WiFi de la cabine</span>
           </div>
           <div class="flex items-center gap-1 bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-full">
             <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
@@ -111,15 +111,15 @@
         </div>
 
         <div class="bg-white/10 rounded-xl p-4 mb-3">
-          <div class="text-white/60 text-xs mb-1 uppercase tracking-wider">Réseau</div>
+          <div class="text-green-600/60 text-xs mb-1 uppercase tracking-wider">Réseau</div>
           <div class="font-semibold text-base" id="wifi-ssid">Villa-Les-Oliviers</div>
         </div>
 
         <div class="bg-white/10 rounded-xl p-4">
-          <div class="text-white/60 text-xs mb-2 uppercase tracking-wider">Mot de passe</div>
+          <div class="text-green-600/60 text-xs mb-2 uppercase tracking-wider">Mot de passe</div>
           <div class="flex items-center justify-between">
-            <div id="wifi-password" class="wifi-code text-white">••••••••</div>
-            <button id="toggle-wifi-btn" class="text-white/60 hover:text-white transition p-1">
+            <div id="wifi-password" class="wifi-code text-green-600">••••••••</div>
+            <button id="toggle-wifi-btn" class="text-green-600/60 hover:text-green-600 transition p-1">
               <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -128,14 +128,14 @@
           </div>
           <div class="flex gap-2 mt-3">
             <button id="copy-wifi-btn"
-              class="flex-1 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold py-2 rounded-lg transition flex items-center justify-center gap-1.5">
+              class="flex-1 bg-white/15 hover:bg-white/25 text-green-600 text-xs font-semibold py-2 rounded-lg transition flex items-center justify-center gap-1.5">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
               </svg>
               Copier
             </button>
             <button id="share-wifi-btn"
-              class="flex-1 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold py-2 rounded-lg transition flex items-center justify-center gap-1.5">
+              class="flex-1 bg-white/15 hover:bg-white/25 text-green-600 text-xs font-semibold py-2 rounded-lg transition flex items-center justify-center gap-1.5">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
               </svg>
@@ -149,7 +149,7 @@
     <!-- ==================== TABS ==================== -->
     <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden mb-5">
       <div class="flex border-b border-stone-100">
-        <button data-tab-target="tab-guide" class="nav-tab active flex-1 py-3 text-sm font-medium transition">
+        <button data-tab-target="tab-guide" class="nav-tab active flex-1 py-3 text-sm font-semibold bg-amber-500 text-stone-900 transition">
           🏠 La villa
         </button>
         <button data-tab-target="tab-local" class="nav-tab flex-1 py-3 text-sm font-medium text-stone-500 hover:bg-stone-50 transition">
@@ -167,7 +167,9 @@
             <span class="text-xl mt-0.5">🚪</span>
             <div>
               <div class="font-semibold text-sm text-stone-800">Accès & Boîte à clés</div>
-              <div class="text-sm text-stone-500 mt-1">La clé se trouve dans la boîte à clés à l'entrée du portail. Le code est <strong class="text-stone-700" id="key-code">XXXX</strong>. Rangez-la après chaque sortie.</div>
+              <div class="text-sm text-stone-500 mt-1">La clé se trouve dans la boîte à clés à l'entrée du portail. Le code est <strong class="text-stone-700" id="key-code">
+                <span class="inline-block w-10 h-3.5 bg-stone-200 rounded animate-pulse align-middle"></span>
+              </strong>. Rangez-la après chaque sortie.</div>
             </div>
           </div>
           <div class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl">
@@ -285,18 +287,13 @@
       </div>
     </div>
 
-    <!-- QR Code invite section -->
-    <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-5 mb-5">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 bg-stone-100 rounded-xl flex items-center justify-center flex-shrink-0" id="qr-container">
-          <!-- QR Code will be generated here -->
-          <svg class="w-6 h-6 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
-          </svg>
-        </div>
-        <div>
-          <div class="font-semibold text-stone-800 text-sm">Partagez avec vos proches</div>
-          <div class="text-xs text-stone-500 mt-0.5">Faites scanner ce QR code pour qu'ils installent l'app et voient aussi le code WiFi.</div>
+    <!-- QR Code WiFi (affiché uniquement quand le WiFi est déverrouillé) -->
+    <div id="wifi-qr-card" class="hidden bg-white rounded-2xl shadow-sm border border-stone-100 p-5 mb-5">
+      <div class="font-semibold text-stone-800 text-sm mb-3">📶 Connexion rapide</div>
+      <div class="flex items-center gap-4">
+        <div id="qr-container" class="flex-shrink-0 bg-stone-50 rounded-xl p-1"></div>
+        <div class="text-xs text-stone-500 leading-relaxed">
+          Scannez ce QR code avec l'appareil photo pour vous connecter au WiFi automatiquement — sans saisir le mot de passe.
         </div>
       </div>
     </div>

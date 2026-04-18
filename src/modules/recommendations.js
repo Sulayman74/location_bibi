@@ -219,16 +219,20 @@ export function initRecommendationTabs(tabsId = 'rec-tabs', contentId = 'rec-con
   tabsEl.addEventListener('click', e => {
     const btn = e.target.closest('[data-tab]');
     if (!btn) return;
+    console.log('[rec-tab] clicked:', btn.dataset.tab)
 
     const category = btn.dataset.tab;
     tabsEl.querySelectorAll('.rec-tab').forEach(t => {
-      t.classList.remove('text-white') // purge la classe initiale HTML
-      t.classList.toggle('bg-amber-500', t === btn);
-      t.classList.toggle('text-stone-900', t === btn);
-      t.classList.toggle('font-semibold', t === btn);
-      t.classList.toggle('bg-white', t !== btn);
-      t.classList.toggle('text-stone-600', t !== btn);
-      t.classList.toggle('font-medium', t !== btn);
+      t.classList.remove('bg-amber-500', 'text-stone-900', 'text-stone-600', 'text-white')
+      if (t === btn) {
+        t.style.backgroundColor = '#f59e0b'
+        t.style.color = '#1c1917'
+        t.style.fontWeight = '600'
+      } else {
+        t.style.backgroundColor = '#ffffff'
+        t.style.color = '#57534e'
+        t.style.fontWeight = '500'
+      }
     });
 
     renderRecommendations(contentId, category);
