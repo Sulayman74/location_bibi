@@ -15,8 +15,9 @@ import {
   renderStatsCards,
   subscribeToUpcomingBookings,
 } from './modules/admin-panel.js'
-import { getDownloadURL, ref } from 'firebase/storage';
+import { getDownloadURL, ref } from 'firebase/storage'
 import { isAdmin, onAuthChange, resetPassword, signIn, signOut } from './modules/auth.js'
+import { cancelBooking } from './modules/booking.js'
 
 import { initPageTransitions } from './modules/transitions.js'
 import { storage } from './modules/firebase-config.js';
@@ -45,26 +46,52 @@ async function init() {
   if (params.get('login')) showLogin(params.get('reason'))
     
     document.getElementById('bookings-table-body')?.addEventListener('click', async (e) => {
-  const btn = e.target.closest('[data-action="view-id"]');
-  if (btn) {
-    e.preventDefault();
-    const path = btn.getAttribute('data-path');
-    
-    if (path) {
-      try {
-        btn.textContent = "Chargement...";
-        // L'admin étant connecté, Firebase acceptera de donner l'URL
-        const url = await getDownloadURL(ref(storage, path));
-        window.open(url, '_blank', 'noopener,noreferrer');
-        btn.textContent = "Voir la pièce";
-      } catch (err) {
-        console.error("Erreur d'accès au document:", err);
-        alert("Impossible de charger le document sécurisé.");
-        btn.textContent = "Voir la pièce";
+    // Voir pièce d'identité
+    const viewBtn = e.target.closest('[data-action="view-id"]')
+    if (viewBtn) {
+      e.preventDefault()
+      const path = viewBtn.getAttribute('data-path')
+      if (path) {
+        try {
+          viewBtn.textContent = 'Chargement…'
+          const url = await getDownloadURL(ref(storage, path))
+          window.open(url, '_blank', 'noopener,noreferrer')
+          viewBtn.textContent = 'Voir la pièce'
+        } catch (err) {
+          console.error('Erreur document:', err)
+          alert('Impossible de charger le document.')
+          viewBtn.textContent = 'Voir la pièce'
+        }
       }
     }
-  }
-});
+
+    // Annuler une réservation
+    const cancelBtn = e.target.closest('[data-action="cancel-booking"]')
+    if (cancelBtn) {
+      e.preventDefault()
+      const bookingId   = cancelBtn.dataset.bookingId
+      const guest       = cancelBtn.dataset.guest
+      const amount      = cancelBtn.dataset.amount
+      const refundLabel = cancelBtn.dataset.refundLabel
+
+      const confirmed = window.confirm(
+        `Annuler la réservation #${bookingId} ?\n\nVoyageur : ${guest}\nMontant : ${amount}€\nRemboursement : ${refundLabel}\n\nCette action est irréversible.`
+      )
+      if (!confirmed) return
+
+      cancelBtn.textContent = 'Annulation…'
+      cancelBtn.disabled = true
+
+      try {
+        await cancelBooking(bookingId, 'admin_request')
+        await loadReservationsSection()
+      } catch (err) {
+        alert(`Erreur : ${err.message}`)
+        cancelBtn.textContent = 'Annuler'
+        cancelBtn.disabled = false
+      }
+    }
+  })
 }
 
 // ==================== LOGIN ====================

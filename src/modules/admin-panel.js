@@ -190,6 +190,20 @@ if (booking.idDocumentPath) {
   docHtml = `<span class="text-xs text-amber-500">En attente</span>`;
 }
 
+  const daysUntil = (checkIn - new Date()) / (1000 * 60 * 60 * 24)
+  const refundLabel = daysUntil >= 7 ? 'Remboursement total' : 'Sans remboursement'
+  const cancelBtn = status === 'confirmed'
+    ? `<button
+        data-action="cancel-booking"
+        data-booking-id="${booking.id}"
+        data-guest="${booking.guestName || ''}"
+        data-amount="${((booking.amount || 0) / 100).toLocaleString('fr-FR')}"
+        data-refund-label="${refundLabel}"
+        class="text-xs text-red-500 hover:text-red-700 hover:underline font-medium transition">
+        Annuler
+      </button>`
+    : '<span class="text-xs text-stone-300">—</span>'
+
   return `
     <tr class="hover:bg-stone-50 transition">
       <td class="px-4 py-3 text-xs font-mono text-amber-600 font-semibold">#${booking.id}</td>
@@ -205,6 +219,9 @@ if (booking.idDocumentPath) {
       </td>
       <td class="px-4 py-3">
         ${docHtml}
+      </td>
+      <td class="px-4 py-3">
+        ${cancelBtn}
       </td>
     </tr>
   `

@@ -288,18 +288,18 @@ function renderConfirmation(bookingId, dates, formData, total) {
  * Called from guest portal or admin panel.
  */
 export async function cancelBooking(bookingId, reason = '') {
-  try {
-    const res = await fetch(`${FUNCTIONS_BASE_URL}/cancelBooking`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bookingId, reason })
-    });
-    if (!res.ok) throw new Error(`Server error ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    console.error('[Booking] Cancel error:', err);
-    throw err;
-  }
+  const { getAuth } = await import('firebase/auth')
+  const token = await getAuth().currentUser?.getIdToken()
+  const res = await fetch(`${FUNCTIONS_BASE_URL}/cancelBooking`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ bookingId, reason }),
+  })
+  if (!res.ok) throw new Error(`Server error ${res.status}`)
+  return res.json()
 }
 
 // ==================== HELPERS ====================

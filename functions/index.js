@@ -205,6 +205,21 @@ exports.cancelBooking = onRequest(
   async (req, res) => {
     if (req.method !== 'POST') return res.status(405).end();
 
+    // Vérifier que l'appelant est un admin Firebase Auth
+    const authHeader = req.headers.authorization || ''
+    const idToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+    if (!idToken) return res.status(401).json({ error: 'Unauthorized' })
+    let caller
+    try {
+      caller = await admin.auth().verifyIdToken(idToken)
+    } catch {
+      return res.status(401).json({ error: 'Invalid token' })
+    }
+    const callerDoc = await db.collection('users').doc(caller.uid).get()
+    if (!callerDoc.exists || callerDoc.data().role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' })
+    }
+
     const { bookingId, reason } = req.body;
     if (!bookingId) return res.status(400).json({ error: 'bookingId required' });
 
@@ -216,7 +231,7 @@ exports.cancelBooking = onRequest(
       return res.status(400).json({ error: 'Only confirmed bookings can be cancelled' });
     }
 
-    // Check refund eligibility (7 days before check-in)
+    // Politique d'annulation : remboursement total si ≥ 7 jours avant check-in
     const checkIn = booking.checkIn.toDate();
     const daysUntilCheckIn = (checkIn - new Date()) / (1000 * 60 * 60 * 24);
     const refundable = daysUntilCheckIn >= 7;
