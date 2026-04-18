@@ -83,8 +83,6 @@ async function init() {
     smartReviewRequest(booking, PROPERTY_CONFIG.googlePlaceId)
     startCheckinCountdown(booking.checkIn)
 
-    // Code boîte à clés
-    console.log('[guest] booking fields:', JSON.stringify(booking))
     const keyEl = document.getElementById('key-code')
     if (keyEl) keyEl.textContent = booking.keyCode || '—'
 
@@ -158,7 +156,6 @@ function initTabs() {
   document.addEventListener('click', e => {
     const tab = e.target.closest('[data-tab-target]')
     if (!tab) return
-    console.log('[tab] clicked:', tab.dataset.tabTarget, '| isFloating:', tab.classList.contains('floating-nav-btn'))
     navigateToTab(tab.dataset.tabTarget)
   })
 }

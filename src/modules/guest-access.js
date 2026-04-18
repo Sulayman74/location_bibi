@@ -199,7 +199,6 @@ function showWifiUnlocked(ssid, password) {
 
   // QR code WiFi — format standard reconnu par iOS et Android
   const qrCard = document.getElementById("wifi-qr-card")
-  console.log('[WiFi] qrCard found:', !!qrCard, '| ssid:', ssid)
   if (qrCard) qrCard.classList.remove("hidden")
   generateQRCode("qr-container", `WIFI:T:WPA;S:${ssid};P:${password};;`)
 }

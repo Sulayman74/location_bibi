@@ -219,8 +219,6 @@ export function initRecommendationTabs(tabsId = 'rec-tabs', contentId = 'rec-con
   tabsEl.addEventListener('click', e => {
     const btn = e.target.closest('[data-tab]');
     if (!btn) return;
-    console.log('[rec-tab] clicked:', btn.dataset.tab)
-
     const category = btn.dataset.tab;
     tabsEl.querySelectorAll('.rec-tab').forEach(t => {
       t.classList.remove('bg-amber-500', 'text-stone-900', 'text-stone-600', 'text-white')

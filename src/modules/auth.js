@@ -39,18 +39,14 @@ export function resetPassword(email) {
 export async function getUserRole(uid) {
   if (_cachedRole) return _cachedRole
   const ref  = doc(db, 'users', uid)
-  console.log('[getUserRole] lecture doc path:', ref.path)
   const snap = await getDoc(ref)
-  console.log('[getUserRole] exists:', snap.exists(), '| data:', snap.data())
   if (!snap.exists()) return null
   _cachedRole = snap.data().role || null
-  console.log('[getUserRole] role =', _cachedRole)
   return _cachedRole
 }
 
 export async function isAdmin(uid) {
   const role = await getUserRole(uid)
-  console.log('[isAdmin] uid:', uid, '| role:', role, '| result:', role === 'admin')
   return role === 'admin'
 }
 
