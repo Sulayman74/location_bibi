@@ -173,6 +173,23 @@
 .slide-out-right { animation: slide-out-right 0.45s cubic-bezier(0.4,0,0.2,1) both; }
 
 
+/* ==================== Tab Slide Transitions ==================== */
+@keyframes tab-slide-from-right {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes tab-slide-from-left {
+  from { transform: translateX(-40px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+.tab-slide-from-right {
+  animation: tab-slide-from-right 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.tab-slide-from-left {
+  animation: tab-slide-from-left 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
 /* ==================== Floating Navigation ==================== */
 .floating-nav-container {
   position: fixed;

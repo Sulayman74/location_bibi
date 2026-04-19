@@ -3,7 +3,7 @@
  * Stratégie: Cache-First pour assets statiques, Network-First pour données Firestore
  */
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.0.3';
 const STATIC_CACHE = `villa-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `villa-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE  = `villa-images-${CACHE_VERSION}`;
@@ -16,14 +16,6 @@ const PRECACHE_ASSETS = [
   '/guest.html',
   '/offline.html',
   '/manifest.json',
-  '/src/app.js',
-  '/src/modules/firebase-config.js',
-  '/src/modules/calendar.js',
-  '/src/modules/booking.js',
-  '/src/modules/guest-access.js',
-  '/src/modules/recommendations.js',
-  '/src/modules/pwa.js',
-  '/src/modules/reviews.js',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap',
 ];
 

@@ -18,12 +18,25 @@ import { requestNotificationPermission } from './modules/pwa.js'
 import { initPageTransitions } from './modules/transitions.js'
 import { initTabSwipe } from './modules/swipe.js'
 
+const TAB_ORDER = ['tab-guide', 'tab-local', 'tab-review', 'tab-profile']
+
 function navigateToTab(tabId) {
   const panel = document.getElementById(tabId)
   if (!panel) return
 
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
+  const allPanels = document.querySelectorAll('.tab-panel')
+  const currentPanel = [...allPanels].find(p => p.classList.contains('active'))
+  const fromIdx = TAB_ORDER.indexOf(currentPanel?.id ?? '')
+  const toIdx   = TAB_ORDER.indexOf(tabId)
+  const slideClass = toIdx > fromIdx ? 'tab-slide-from-right' : 'tab-slide-from-left'
+
+  allPanels.forEach(p => p.classList.remove('active'))
   panel.classList.add('active')
+
+  if (fromIdx !== toIdx) {
+    panel.classList.add(slideClass)
+    panel.addEventListener('animationend', () => panel.classList.remove(slideClass), { once: true })
+  }
   
   document.querySelectorAll('[data-tab-target]').forEach(t => {
     const isActive = t.dataset.tabTarget === tabId
