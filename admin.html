@@ -93,6 +93,9 @@
           <button data-section="pricing" class="admin-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-stone-700 hover:bg-stone-50">
             <span class="text-lg">💰</span> Tarifs
           </button>
+          <button data-section="settings" class="admin-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-stone-700 hover:bg-stone-50">
+            <span class="text-lg">⚙️</span> Réglages
+          </button>
         </nav>
 
         <div class="px-3 pb-5">
@@ -145,6 +148,9 @@
             </button>
             <button data-section="pricing" class="admin-nav-item-mobile w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-700">
               <span>💰</span> Tarifs
+            </button>
+            <button data-section="settings" class="admin-nav-item-mobile w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-700">
+              <span>⚙️</span> Réglages
             </button>
           </nav>
           <div class="px-3 pb-5 border-t border-stone-100 mt-2 pt-4">
@@ -448,6 +454,105 @@
                 class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 py-3 rounded-xl transition shadow-lg">
                 <span id="save-pricing-spinner" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                 <span id="save-pricing-text">Sauvegarder les tarifs</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- ====== SECTION: SETTINGS ====== -->
+          <section id="section-settings" class="admin-section hidden">
+            <div class="mb-6">
+              <h1 class="font-serif text-2xl font-bold text-stone-800">Réglages</h1>
+              <p class="text-stone-500 text-sm mt-1">Mode de réservation et liens vers les plateformes externes.</p>
+            </div>
+
+            <div id="settings-alert" class="hidden mb-5 rounded-xl p-4 text-sm font-medium"></div>
+
+            <!-- Booking Mode Toggle -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 mb-6">
+              <h2 class="font-semibold text-stone-800 mb-1">Mode de réservation</h2>
+              <p class="text-sm text-stone-500 mb-5">Choisissez comment vos visiteurs réservent le logement.</p>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <button id="mode-direct" class="booking-mode-btn flex flex-col items-start gap-3 p-5 rounded-2xl border-2 transition text-left">
+                  <div class="text-3xl">💳</div>
+                  <div>
+                    <div class="font-semibold text-stone-800">Réservation Directe</div>
+                    <div class="text-sm text-stone-500 mt-1">Paiement Stripe sur votre site. Sans commission plateforme. Maximum de revenus.</div>
+                  </div>
+                </button>
+                <button id="mode-ota" class="booking-mode-btn flex flex-col items-start gap-3 p-5 rounded-2xl border-2 transition text-left">
+                  <div class="text-3xl">🌐</div>
+                  <div>
+                    <div class="font-semibold text-stone-800">Plateformes Externes</div>
+                    <div class="text-sm text-stone-500 mt-1">Redirige vers Airbnb ou Booking.com. Idéal en haute saison pour la visibilité.</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- OTA Links -->
+            <div id="ota-links-panel" class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 mb-6 hidden">
+              <h2 class="font-semibold text-stone-800 mb-1">Liens plateformes</h2>
+              <p class="text-sm text-stone-500 mb-5">Les visiteurs seront redirigés vers ces URLs.</p>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">🏠 Airbnb — URL de votre annonce</label>
+                  <input type="url" id="url-airbnb"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition"
+                    placeholder="https://www.airbnb.fr/rooms/..." />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">📅 Booking.com — URL de votre annonce</label>
+                  <input type="url" id="url-booking"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition"
+                    placeholder="https://www.booking.com/hotel/..." />
+                </div>
+              </div>
+            </div>
+
+            <!-- iCal Sync (toujours visible) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 mb-6">
+              <div class="flex items-start justify-between gap-4 mb-1 flex-wrap">
+                <div>
+                  <h2 class="font-semibold text-stone-800">Synchronisation iCal</h2>
+                  <p class="text-sm text-stone-500 mt-1">Le calendrier se synchronise automatiquement toutes les heures pour bloquer les dates réservées sur vos plateformes.</p>
+                </div>
+                <button id="manual-sync-btn"
+                  class="flex-shrink-0 inline-flex items-center gap-2 border border-stone-200 hover:border-amber-400 text-stone-600 hover:text-amber-700 text-sm font-medium px-4 py-2 rounded-xl transition">
+                  <span id="manual-sync-spinner" class="hidden w-4 h-4 border-2 border-stone-300 border-t-amber-500 rounded-full animate-spin"></span>
+                  <span id="manual-sync-text">🔄 Synchroniser maintenant</span>
+                </button>
+              </div>
+              <div id="ical-sync-status" class="hidden mb-4 text-xs text-stone-400 flex items-center gap-1.5">
+                <span>Dernière sync :</span><span id="ical-last-sync">—</span>
+              </div>
+              <div class="space-y-4 mt-4">
+                <div>
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">
+                    🏠 Lien iCal Airbnb
+                    <span class="ml-1 text-stone-400 font-normal">— Calendrier › Lien iCal sur Airbnb</span>
+                  </label>
+                  <input type="url" id="ical-airbnb"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition font-mono"
+                    placeholder="https://www.airbnb.fr/calendar/ical/..." />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-stone-700 mb-1.5">
+                    📅 Lien iCal Booking.com
+                    <span class="ml-1 text-stone-400 font-normal">— Paramètres › Calendrier sur Booking</span>
+                  </label>
+                  <input type="url" id="ical-booking"
+                    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition font-mono"
+                    placeholder="https://admin.booking.com/hotel/hoteladmin/ical.html?..." />
+                </div>
+              </div>
+              <div id="ical-result" class="hidden mt-4 rounded-xl p-3 text-sm"></div>
+            </div>
+
+            <div class="flex justify-end">
+              <button id="save-settings-btn"
+                class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 py-3 rounded-xl transition shadow-lg">
+                <span id="save-settings-spinner" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                <span id="save-settings-text">Sauvegarder les réglages</span>
               </button>
             </div>
           </section>

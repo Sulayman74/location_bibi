@@ -67,7 +67,39 @@
     </div>
   </div>
 
-  <main class="max-w-5xl mx-auto px-4 py-8">
+  <!-- OTA Mode Screen (hidden by default, shown by JS if booking_mode = ota_only) -->
+  <div id="ota-mode-screen" class="hidden max-w-lg mx-auto px-4 py-16 text-center">
+    <div class="text-5xl mb-4">🌐</div>
+    <h1 class="font-serif text-2xl font-bold text-stone-800 mb-3">Réservez via nos plateformes</h1>
+    <p class="text-stone-500 mb-8">Les réservations directes ne sont pas disponibles pour le moment. Choisissez votre plateforme préférée&nbsp;:</p>
+    <div class="space-y-3">
+      <a id="ota-res-airbnb" href="#" target="_blank" rel="noopener noreferrer"
+        class="flex items-center gap-4 w-full bg-[#FF5A5F] hover:bg-[#e04e53] text-white font-semibold px-6 py-4 rounded-2xl transition">
+        <span class="text-2xl">🏠</span>
+        <div class="text-left flex-1">
+          <div class="font-bold">Airbnb</div>
+          <div class="text-xs text-white/80">Réserver sur Airbnb</div>
+        </div>
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+      </a>
+      <a id="ota-res-booking" href="#" target="_blank" rel="noopener noreferrer"
+        class="flex items-center gap-4 w-full bg-[#003580] hover:bg-[#002a66] text-white font-semibold px-6 py-4 rounded-2xl transition">
+        <span class="text-2xl">📅</span>
+        <div class="text-left flex-1">
+          <div class="font-bold">Booking.com</div>
+          <div class="text-xs text-white/80">Réserver sur Booking</div>
+        </div>
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+      </a>
+    </div>
+    <a href="/" class="inline-block mt-8 text-sm text-amber-600 hover:underline">← Retour à l'accueil</a>
+  </div>
+
+  <main id="reservation-main" class="max-w-5xl mx-auto px-4 py-8">
     <div class="grid lg:grid-cols-3 gap-8">
 
       <!-- ==================== FORM AREA ==================== -->

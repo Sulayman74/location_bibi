@@ -97,8 +97,8 @@
           <a href="#disponibilites" class="text-white/90 hover:text-white transition">Disponibilités</a>
           <a href="#alentours" class="text-white/90 hover:text-white transition">Alentours</a>
           <a href="#avis" class="text-white/90 hover:text-white transition">Avis</a>
-          <a href="/reservation.html" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full font-semibold transition shadow-lg">
-            Réserver 
+          <a href="/reservation.html" data-booking-cta class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full font-semibold transition shadow-lg">
+            Réserver
           </a>
         </div>
 
@@ -118,8 +118,8 @@
         <a href="#disponibilites" class="block py-2 text-stone-700 font-medium">Disponibilités</a>
         <a href="#alentours" class="block py-2 text-stone-700 font-medium">Alentours</a>
         <a href="#avis" class="block py-2 text-stone-700 font-medium">Avis</a>
-        <a href="/reservation.html" class="block mt-3 bg-amber-500 text-white text-center py-3 rounded-xl font-semibold">
-          Réserver maintenant 
+        <a href="/reservation.html" data-booking-cta class="block mt-3 bg-amber-500 text-white text-center py-3 rounded-xl font-semibold">
+          Réserver maintenant
         </a>
       </div>
     </div>
@@ -163,7 +163,7 @@
 
         <!-- Primary CTA -->
         <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
-          <a href="/reservation.html"
+          <a href="/reservation.html" data-booking-cta
             class="group bg-amber-500 hover:bg-amber-400 text-white font-bold px-8 py-4 rounded-2xl text-lg shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-amber-500/40">
             Vérifier les disponibilités
             <span class="ml-2 group-hover:translate-x-1 inline-block transition-transform"></span>
@@ -207,9 +207,9 @@
             <span class="text-yellow-400">★★★★★</span> 4.9 · 47 avis
           </span>
         </div>
-        <a href="/reservation.html"
+        <a href="/reservation.html" data-booking-cta
           class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition shadow-lg text-center">
-          Réserver maintenant 
+          Réserver maintenant
         </a>
       </div>
     </div>
@@ -270,7 +270,7 @@
   </div>
 </div>
 <div class="flex items-center justify-center">
-  <a href="/reservation.html"
+  <a href="/reservation.html" data-booking-cta
   class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl transition shadow-lg">
   Vérifier les disponibilités
   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -338,9 +338,9 @@
 
         <!-- CTA under calendar -->
         <div class="mt-6 text-center">
-          <a href="/reservation.html" id="calendar-cta"
+          <a href="/reservation.html" id="calendar-cta" data-booking-cta
             class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 py-3 rounded-xl transition shadow-lg">
-            Continuer la réservation 
+            Continuer la réservation
           </a>
         </div>
       </div>
@@ -358,20 +358,20 @@
         <div class="text-3xl mb-2">🌸</div>
         <h3 class="font-semibold text-stone-700 mb-1">Basse saison</h3>
         <div class="text-sm text-stone-400 mb-3">Oct – Mai</div>
-        <div class="text-2xl font-bold text-stone-800">45€<span class="text-sm font-normal text-stone-500">/nuit</span></div>
+        <div class="text-2xl font-bold text-stone-800"><span data-price-low>45</span>€<span class="text-sm font-normal text-stone-500">/nuit</span></div>
       </div>
       <div class="bg-amber-500 rounded-2xl p-6 shadow-lg text-center text-white relative">
         <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-700 text-white text-xs font-bold px-3 py-1 rounded-full">Populaire</div>
         <div class="text-3xl mb-2">☀️</div>
         <h3 class="font-semibold mb-1">Haute saison</h3>
         <div class="text-sm text-amber-200 mb-3">Juin – Sept</div>
-        <div class="text-2xl font-bold">85€<span class="text-sm font-normal text-amber-200">/nuit</span></div>
+        <div class="text-2xl font-bold"><span data-price-high>85</span>€<span class="text-sm font-normal text-amber-200">/nuit</span></div>
       </div>
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 text-center">
         <div class="text-3xl mb-2">🎄</div>
         <h3 class="font-semibold text-stone-700 mb-1">Vacances scolaires</h3>
         <div class="text-sm text-stone-400 mb-3">Noël, Pâques</div>
-        <div class="text-2xl font-bold text-stone-800">90€<span class="text-sm font-normal text-stone-500">/nuit</span></div>
+        <div class="text-2xl font-bold text-stone-800"><span data-price-school>90</span>€<span class="text-sm font-normal text-stone-500">/nuit</span></div>
       </div>
     </div>
     <div class="mt-6 bg-emerald-50 rounded-2xl p-4 flex items-start gap-3 border border-emerald-200">
@@ -458,7 +458,7 @@
     <div class="max-w-3xl mx-auto px-4">
       <h2 class="font-serif text-4xl font-bold mb-4">Votre prochaine escapade commence ici</h2>
       <p class="text-amber-100 text-lg mb-8">Réservez directement et profitez de tarifs privilégiés sans commission</p>
-      <a href="/reservation.html"
+      <a href="/reservation.html" data-booking-cta
         class="inline-flex items-center gap-2 bg-white text-amber-700 font-bold px-8 py-4 rounded-2xl text-lg shadow-2xl hover:bg-amber-50 transition-all hover:scale-105">
         Réserver le studio dès maintenant
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -492,7 +492,7 @@
             <li><a href="#logement" class="hover:text-amber-400 transition">Le logement</a></li>
             <li><a href="#disponibilites" class="hover:text-amber-400 transition">Disponibilités</a></li>
             <li><a href="#alentours" class="hover:text-amber-400 transition">Alentours</a></li>
-            <li><a href="/reservation.html" class="hover:text-amber-400 transition">Réserver</a></li>
+            <li><a href="/reservation.html" data-booking-cta class="hover:text-amber-400 transition">Réserver</a></li>
           </ul>
         </div>
         <div>
@@ -609,6 +609,44 @@
       if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % galleryImages.length; showImage(); }
     });
   </script>
+
+  <!-- ==================== OTA MODAL ==================== -->
+  <div id="ota-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-sm">
+      <div class="text-center mb-6">
+        <div class="text-4xl mb-3">🌐</div>
+        <h2 class="font-serif text-xl font-bold text-stone-800">Choisissez votre plateforme</h2>
+        <p class="text-stone-500 text-sm mt-2">Réservez en toute sécurité via votre plateforme préférée.</p>
+      </div>
+      <div class="space-y-3">
+        <a id="ota-airbnb-link" href="#" target="_blank" rel="noopener noreferrer"
+          class="flex items-center gap-4 w-full bg-[#FF5A5F] hover:bg-[#e04e53] text-white font-semibold px-5 py-4 rounded-2xl transition">
+          <span class="text-2xl">🏠</span>
+          <div class="text-left flex-1">
+            <div class="font-bold">Airbnb</div>
+            <div class="text-xs text-white/80">Réserver sur Airbnb</div>
+          </div>
+          <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </a>
+        <a id="ota-booking-link" href="#" target="_blank" rel="noopener noreferrer"
+          class="flex items-center gap-4 w-full bg-[#003580] hover:bg-[#002a66] text-white font-semibold px-5 py-4 rounded-2xl transition">
+          <span class="text-2xl">📅</span>
+          <div class="text-left flex-1">
+            <div class="font-bold">Booking.com</div>
+            <div class="text-xs text-white/80">Réserver sur Booking</div>
+          </div>
+          <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </a>
+      </div>
+      <button id="ota-modal-close" class="mt-5 w-full text-stone-400 hover:text-stone-600 text-sm py-2 transition">
+        Fermer
+      </button>
+    </div>
+  </div>
 
   <script type="module" src="/src/main.js"></script>
 </body>

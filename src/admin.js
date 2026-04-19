@@ -20,7 +20,8 @@ import { isAdmin, onAuthChange, resetPassword, signIn, signOut } from './modules
 import { cancelBooking } from './modules/booking.js'
 
 import { initPageTransitions } from './modules/transitions.js'
-import { storage, getPricing, savePricing } from './modules/firebase-config.js';
+import { storage, getPricing, savePricing, getBookingSettings, saveBookingSettings, db } from './modules/firebase-config.js';
+import { doc, getDoc } from 'firebase/firestore';
 
 // ==================== BOOT ====================
 
@@ -221,6 +222,7 @@ async function navigateTo(section) {
     case 'push':          await loadPushSection() ; break
     case 'guests':        await loadGuestsSection() ; break
     case 'pricing':       await loadPricingSection() ; break
+    case 'settings':      await loadSettingsSection() ; break
   }
 }
 
@@ -537,6 +539,158 @@ function initMobileNav() {
   document.getElementById('mobile-nav-btn')?.addEventListener('click', () => nav?.classList.remove('hidden'))
   overlay?.addEventListener('click', () => nav?.classList.add('hidden'))
   close?.addEventListener('click', () => nav?.classList.add('hidden'))
+}
+
+// ==================== SETTINGS ====================
+
+let _currentBookingMode = 'direct'
+
+async function loadSettingsSection() {
+  const settings = await getBookingSettings()
+  _currentBookingMode = settings.booking_mode || 'direct'
+
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? '' }
+  set('url-airbnb',   settings.url_airbnb)
+  set('url-booking',  settings.url_booking)
+  set('ical-airbnb',  settings.ical_airbnb)
+  set('ical-booking', settings.ical_booking)
+
+  updateModeButtons(_currentBookingMode)
+
+  // Load last iCal sync metadata
+  try {
+    const syncSnap = await getDoc(doc(db, 'config', 'ical_sync'))
+    if (syncSnap.exists()) {
+      const { lastSync, datesBlocked, eventsCount } = syncSnap.data()
+      const date = lastSync?.toDate ? lastSync.toDate() : new Date(lastSync)
+      const el = document.getElementById('ical-last-sync')
+      if (el) el.textContent = `${date.toLocaleString('fr-FR')} · ${eventsCount || 0} événements · ${datesBlocked || 0} jours bloqués`
+      document.getElementById('ical-sync-status')?.classList.remove('hidden')
+    }
+  } catch (e) { /* silently ignore */ }
+
+  document.getElementById('mode-direct')?.addEventListener('click', () => {
+    _currentBookingMode = 'direct'
+    updateModeButtons('direct')
+  })
+  document.getElementById('mode-ota')?.addEventListener('click', () => {
+    _currentBookingMode = 'ota_only'
+    updateModeButtons('ota_only')
+  })
+
+  document.getElementById('save-settings-btn')?.addEventListener('click', saveSettingsHandler, { once: true })
+  document.getElementById('manual-sync-btn')?.addEventListener('click', manualIcalSync, { once: true })
+}
+
+function updateModeButtons(mode) {
+  const directBtn = document.getElementById('mode-direct')
+  const otaBtn    = document.getElementById('mode-ota')
+  const otaPanel  = document.getElementById('ota-links-panel')
+
+  if (directBtn) {
+    directBtn.classList.toggle('border-amber-500', mode === 'direct')
+    directBtn.classList.toggle('bg-amber-50',      mode === 'direct')
+    directBtn.classList.toggle('border-stone-200', mode !== 'direct')
+  }
+  if (otaBtn) {
+    otaBtn.classList.toggle('border-amber-500', mode === 'ota_only')
+    otaBtn.classList.toggle('bg-amber-50',      mode === 'ota_only')
+    otaBtn.classList.toggle('border-stone-200', mode !== 'ota_only')
+  }
+  otaPanel?.classList.toggle('hidden', mode !== 'ota_only')
+}
+
+async function saveSettingsHandler() {
+  const btn     = document.getElementById('save-settings-btn')
+  const spinner = document.getElementById('save-settings-spinner')
+  const btnText = document.getElementById('save-settings-text')
+
+  const data = {
+    booking_mode: _currentBookingMode,
+    url_airbnb:   document.getElementById('url-airbnb')?.value?.trim()   || '',
+    url_booking:  document.getElementById('url-booking')?.value?.trim()  || '',
+    ical_airbnb:  document.getElementById('ical-airbnb')?.value?.trim()  || '',
+    ical_booking: document.getElementById('ical-booking')?.value?.trim() || '',
+  }
+
+  btn.disabled = true
+  spinner?.classList.remove('hidden')
+  if (btnText) btnText.textContent = 'Sauvegarde…'
+
+  try {
+    await saveBookingSettings(data)
+    showSettingsAlert('✅ Réglages mis à jour. Les visiteurs verront le changement dans 30 min.', 'success')
+  } catch (err) {
+    showSettingsAlert(`❌ Erreur : ${err.message}`, 'error')
+  } finally {
+    btn.disabled = false
+    spinner?.classList.add('hidden')
+    if (btnText) btnText.textContent = 'Sauvegarder les réglages'
+    btn?.addEventListener('click', saveSettingsHandler, { once: true })
+  }
+}
+
+async function manualIcalSync() {
+  const btn     = document.getElementById('manual-sync-btn')
+  const spinner = document.getElementById('manual-sync-spinner')
+  const btnText = document.getElementById('manual-sync-text')
+  const result  = document.getElementById('ical-result')
+
+  btn.disabled = true
+  spinner?.classList.remove('hidden')
+  if (btnText) btnText.textContent = 'Synchronisation…'
+  result?.classList.add('hidden')
+
+  try {
+    const { auth, FUNCTIONS_BASE_URL } = await import('./modules/firebase-config.js')
+    const { getAuth } = await import('firebase/auth')
+    const token = await getAuth().currentUser?.getIdToken()
+    if (!token) throw new Error('Non authentifié')
+
+    const res = await fetch(`${FUNCTIONS_BASE_URL}/manualSyncIcal`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.error || `HTTP ${res.status}`)
+    }
+    const data = await res.json()
+    if (result) {
+      result.className = 'mt-4 rounded-xl p-3 text-sm bg-emerald-50 text-emerald-700 border border-emerald-200'
+      result.textContent = `✅ Synchronisé : ${data.events || 0} événements · ${data.synced || 0} jours bloqués (${data.sources || 0} source${data.sources > 1 ? 's' : ''})`
+      result.classList.remove('hidden')
+    }
+    // Refresh last sync display
+    document.getElementById('ical-last-sync')?.parentElement?.classList.remove('hidden')
+    const lastSyncEl = document.getElementById('ical-last-sync')
+    if (lastSyncEl) lastSyncEl.textContent = `${new Date().toLocaleString('fr-FR')} · ${data.events || 0} événements · ${data.synced || 0} jours bloqués`
+    document.getElementById('ical-sync-status')?.classList.remove('hidden')
+  } catch (err) {
+    if (result) {
+      result.className = 'mt-4 rounded-xl p-3 text-sm bg-red-50 text-red-700 border border-red-200'
+      result.textContent = `❌ Erreur : ${err.message}`
+      result.classList.remove('hidden')
+    }
+  } finally {
+    btn.disabled = false
+    spinner?.classList.add('hidden')
+    if (btnText) btnText.textContent = '🔄 Synchroniser maintenant'
+    btn?.addEventListener('click', manualIcalSync, { once: true })
+  }
+}
+
+function showSettingsAlert(msg, type) {
+  const el = document.getElementById('settings-alert')
+  if (!el) return
+  el.className = `mb-5 rounded-xl p-4 text-sm font-medium ${
+    type === 'success'
+      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+      : 'bg-red-50 text-red-700 border border-red-200'
+  }`
+  el.textContent = msg
+  el.classList.remove('hidden')
+  if (type === 'success') setTimeout(() => el.classList.add('hidden'), 5000)
 }
 
 // ==================== START ====================

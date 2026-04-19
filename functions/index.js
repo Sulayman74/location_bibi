@@ -276,15 +276,17 @@ exports.getAvailability = onRequest(
     res.set('Cache-Control', 'public, max-age=1800'); // 30 min cache
 
     try {
-      // Merge Firestore reservations + Zodomus blocked dates
-      const [firestoreDates, zodomusDates] = await Promise.allSettled([
+      // Merge: Firestore reservations + availability collection (iCal/direct) + Zodomus
+      const [firestoreDates, availabilityDates, zodomusDates] = await Promise.allSettled([
         getBlockedDatesFromFirestore(),
+        getBlockedDatesFromAvailability(),
         getBlockedDatesFromZodomus(),
       ]);
 
       const allDates = new Set([
-        ...(firestoreDates.status === 'fulfilled' ? firestoreDates.value : []),
-        ...(zodomusDates.status === 'fulfilled' ? zodomusDates.value : []),
+        ...(firestoreDates.status === 'fulfilled'    ? firestoreDates.value    : []),
+        ...(availabilityDates.status === 'fulfilled' ? availabilityDates.value : []),
+        ...(zodomusDates.status === 'fulfilled'      ? zodomusDates.value      : []),
       ]);
 
       res.json({
@@ -316,6 +318,15 @@ async function getBlockedDatesFromFirestore() {
     }
   });
   return dates;
+}
+
+async function getBlockedDatesFromAvailability() {
+  const today = toISO(new Date());
+  const snap = await db.collection('availability')
+    .where(admin.firestore.FieldPath.documentId(), '>=', today)
+    .where('status', '==', 'blocked')
+    .get();
+  return snap.docs.map(d => d.id);
 }
 
 async function getBlockedDatesFromZodomus() {
@@ -416,7 +427,148 @@ exports.syncZodomus = onSchedule(
   }
 );
 
-// ==================== 7. CRON: REVIEW REQUESTS ====================
+// ==================== 7. CRON: SYNC ICAL ====================
+
+exports.syncIcal = onSchedule(
+  { schedule: 'every 1 hours', timeZone: 'Europe/Paris', region: 'europe-west1' },
+  async () => syncIcalFeeds()
+);
+
+exports.manualSyncIcal = onRequest(
+  { cors: [property.siteUrl, 'http://localhost:5000'], region: 'europe-west1' },
+  async (req, res) => {
+    if (req.method !== 'POST') return res.status(405).end();
+    const authHeader = req.headers.authorization || '';
+    const idToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!idToken) return res.status(401).json({ error: 'Unauthorized' });
+    try {
+      const caller = await admin.auth().verifyIdToken(idToken);
+      const callerDoc = await db.collection('users').doc(caller.uid).get();
+      if (!callerDoc.exists || callerDoc.data().role !== 'admin') {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+    } catch {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    const result = await syncIcalFeeds();
+    res.json(result);
+  }
+);
+
+async function syncIcalFeeds() {
+  const settingsSnap = await db.collection('config').doc('booking_settings').get();
+  if (!settingsSnap.exists) return { synced: 0, sources: 0 };
+  const { ical_airbnb, ical_booking } = settingsSnap.data();
+
+  const urls = [ical_airbnb, ical_booking].filter(Boolean);
+  if (!urls.length) return { synced: 0, sources: 0 };
+
+  const allEvents = [];
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      allEvents.push(...parseIcal(text));
+    } catch (err) {
+      console.warn(`[syncIcal] Failed to fetch ${url}:`, err.message);
+    }
+  }
+
+  if (!allEvents.length) {
+    console.log('[syncIcal] No events found in iCal feeds');
+    return { synced: 0, sources: urls.length };
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Collect all dates to write
+  const datesToWrite = [];
+  for (const { start, end, summary } of allEvents) {
+    if (end <= today) continue;
+    iterateDates(start, end, d => {
+      datesToWrite.push({ iso: toISO(d), summary: summary || '' });
+    });
+  }
+
+  // Firestore batch: max 500 writes per batch
+  const BATCH_SIZE = 450;
+  for (let i = 0; i < datesToWrite.length; i += BATCH_SIZE) {
+    const chunk = datesToWrite.slice(i, i + BATCH_SIZE);
+    const batch = db.batch();
+    chunk.forEach(({ iso, summary }) => {
+      batch.set(db.collection('availability').doc(iso), {
+        status: 'blocked',
+        source: 'ical',
+        summary,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+    });
+    await batch.commit();
+  }
+
+  await db.collection('config').doc('ical_sync').set({
+    lastSync: admin.firestore.FieldValue.serverTimestamp(),
+    eventsCount: allEvents.length,
+    datesBlocked: datesToWrite.length,
+  });
+
+  console.log(`[syncIcal] Synced ${allEvents.length} events → ${datesToWrite.length} dates blocked`);
+  return { synced: datesToWrite.length, sources: urls.length, events: allEvents.length };
+}
+
+function parseIcal(text) {
+  // Unfold lines (RFC 5545: continuation lines begin with space or tab)
+  const unfolded = text
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .replace(/\n[ \t]/g, '');
+
+  const events = [];
+  let inEvent = false;
+  let current = {};
+
+  for (const line of unfolded.split('\n')) {
+    if (line === 'BEGIN:VEVENT') {
+      inEvent = true;
+      current = {};
+    } else if (line === 'END:VEVENT') {
+      inEvent = false;
+      if (current.start && current.end) events.push(current);
+    } else if (inEvent) {
+      if (line.startsWith('DTSTART')) {
+        const val = line.includes(':') ? line.split(':').slice(1).join(':') : null;
+        if (val) current.start = parseIcalDate(val.trim());
+      } else if (line.startsWith('DTEND')) {
+        const val = line.includes(':') ? line.split(':').slice(1).join(':') : null;
+        if (val) current.end = parseIcalDate(val.trim());
+      } else if (line.startsWith('SUMMARY')) {
+        current.summary = line.replace(/^SUMMARY[^:]*:/, '').trim();
+      }
+    }
+  }
+  return events.filter(e => e.start && e.end && e.end > e.start);
+}
+
+function parseIcalDate(value) {
+  if (!value) return null;
+  const v = value.trim();
+  if (v.length === 8) {
+    // YYYYMMDD — all-day
+    return new Date(parseInt(v.slice(0, 4)), parseInt(v.slice(4, 6)) - 1, parseInt(v.slice(6, 8)));
+  }
+  const m = v.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/);
+  if (m) {
+    const [, y, mo, d, h, mi, s, z] = m;
+    return z === 'Z'
+      ? new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s))
+      : new Date(+y, +mo - 1, +d, +h, +mi, +s);
+  }
+  return null;
+}
+
+// ==================== 8. CRON: REVIEW REQUESTS ====================
 
 exports.sendReviewRequests = onSchedule(
 { 

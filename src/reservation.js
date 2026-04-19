@@ -3,17 +3,32 @@
  */
 import './styles/main.css'
 import { registerServiceWorker } from './modules/pwa.js'
-import { fetchAvailability, renderCalendar, prevMonth, nextMonth, setGuests, restoreFromSession } from './modules/calendar.js'
+import { fetchAvailability, renderCalendar, prevMonth, nextMonth, setGuests, restoreFromSession, initPricing } from './modules/calendar.js'
 import { initBookingSteps, initStripe, goBackStep } from './modules/booking.js'
 import { initPageTransitions } from './modules/transitions.js'
 import { initStepSwipe } from './modules/swipe.js'
+import { getBookingSettings } from './modules/firebase-config.js'
 
 async function init() {
   initPageTransitions()
   await registerServiceWorker()
 
+  const settings = await getBookingSettings()
+  if (settings.booking_mode === 'ota_only') {
+    document.getElementById('reservation-main')?.classList.add('hidden')
+    const screen = document.getElementById('ota-mode-screen')
+    if (screen) {
+      screen.classList.remove('hidden')
+      const a = document.getElementById('ota-res-airbnb')
+      const b = document.getElementById('ota-res-booking')
+      if (a && settings.url_airbnb)  a.href = settings.url_airbnb
+      if (b && settings.url_booking) b.href = settings.url_booking
+    }
+    return
+  }
+
   restoreFromSession()
-  await fetchAvailability()
+  await Promise.all([initPricing(), fetchAvailability()])
 
   renderCalendar('cal2-grid', 'cal2-title', { compact: true })
 

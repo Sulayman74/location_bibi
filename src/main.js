@@ -4,6 +4,7 @@
 import './styles/main.css'
 import { registerServiceWorker, initInstallPrompt } from './modules/pwa.js'
 import { fetchAvailability, renderCalendar, prevMonth, nextMonth, getNextAvailableDate, initPricing } from './modules/calendar.js'
+import { getBookingSettings } from './modules/firebase-config.js'
 import { initRecommendationTabs } from './modules/recommendations.js'
 import { renderReviews } from './modules/reviews.js'
 import { initPageTransitions } from './modules/transitions.js'
@@ -40,12 +41,17 @@ async function init() {
   } catch (e) { console.warn('PWA init error:', e) }
 
   try {
+    const settings = await getBookingSettings()
+    applyBookingMode(settings)
+  } catch (e) { console.warn('[Main] BookingSettings error:', e) }
+
+  try {
     const [pricing] = await Promise.all([initPricing(), fetchAvailability()])
-    // Update dynamic price display in hero/sticky bar
-    if (pricing?.low) {
-      document.querySelectorAll('[data-price-from]').forEach(el => {
-        el.textContent = pricing.low + '€'
-      })
+    if (pricing) {
+      document.querySelectorAll('[data-price-from]').forEach(el => { el.textContent = pricing.low + '€' })
+      document.querySelectorAll('[data-price-low]').forEach(el  => { el.textContent = pricing.low })
+      document.querySelectorAll('[data-price-high]').forEach(el => { el.textContent = pricing.high })
+      document.querySelectorAll('[data-price-school]').forEach(el => { el.textContent = pricing.school })
     }
     renderCalendar('calendar-grid', 'calendar-title')
 
@@ -63,6 +69,28 @@ async function init() {
     // Fallback: render calendar even without fetch
     renderCalendar('calendar-grid', 'calendar-title')
   }
+}
+
+function applyBookingMode(settings) {
+  if (!settings || settings.booking_mode === 'direct') return
+
+  const modal = document.getElementById('ota-modal')
+  if (!modal) return
+
+  const airbnbLink  = document.getElementById('ota-airbnb-link')
+  const bookingLink = document.getElementById('ota-booking-link')
+  if (airbnbLink  && settings.url_airbnb)  airbnbLink.href  = settings.url_airbnb
+  if (bookingLink && settings.url_booking) bookingLink.href = settings.url_booking
+
+  document.querySelectorAll('[data-booking-cta]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault()
+      modal.classList.remove('hidden')
+    })
+  })
+
+  document.getElementById('ota-modal-close')?.addEventListener('click', () => modal.classList.add('hidden'))
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden') })
 }
 
 function initNavbar() {

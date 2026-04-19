@@ -97,3 +97,39 @@ export async function savePricing(data) {
   _pricingCache = null
   localStorage.removeItem(PRICING_CACHE_KEY)
 }
+
+// ==================== BOOKING SETTINGS ====================
+
+const BOOKING_CACHE_KEY = 'villa_booking_settings'
+const BOOKING_CACHE_TTL = 30 * 60 * 1000
+let _bookingCache = null
+
+export async function getBookingSettings() {
+  if (_bookingCache) return _bookingCache
+
+  const cached = JSON.parse(localStorage.getItem(BOOKING_CACHE_KEY) || 'null')
+  if (cached && Date.now() - cached.fetchedAt < BOOKING_CACHE_TTL) {
+    _bookingCache = cached.data
+    return _bookingCache
+  }
+
+  try {
+    const snap = await getDoc(doc(db, 'config', 'booking_settings'))
+    if (snap.exists()) {
+      _bookingCache = snap.data()
+      localStorage.setItem(BOOKING_CACHE_KEY, JSON.stringify({ data: _bookingCache, fetchedAt: Date.now() }))
+      return _bookingCache
+    }
+  } catch (e) {
+    console.warn('[booking_settings] Firestore failed, using defaults')
+  }
+
+  _bookingCache = { booking_mode: 'direct', url_airbnb: '', url_booking: '' }
+  return _bookingCache
+}
+
+export async function saveBookingSettings(data) {
+  await setDoc(doc(db, 'config', 'booking_settings'), { ...data, updatedAt: serverTimestamp() })
+  _bookingCache = null
+  localStorage.removeItem(BOOKING_CACHE_KEY)
+}
