@@ -3,7 +3,7 @@
  */
 import './styles/main.css'
 import { registerServiceWorker, initInstallPrompt } from './modules/pwa.js'
-import { fetchAvailability, renderCalendar, prevMonth, nextMonth, getNextAvailableDate } from './modules/calendar.js'
+import { fetchAvailability, renderCalendar, prevMonth, nextMonth, getNextAvailableDate, initPricing } from './modules/calendar.js'
 import { initRecommendationTabs } from './modules/recommendations.js'
 import { renderReviews } from './modules/reviews.js'
 import { initPageTransitions } from './modules/transitions.js'
@@ -40,7 +40,13 @@ async function init() {
   } catch (e) { console.warn('PWA init error:', e) }
 
   try {
-    await fetchAvailability()
+    const [pricing] = await Promise.all([initPricing(), fetchAvailability()])
+    // Update dynamic price display in hero/sticky bar
+    if (pricing?.low) {
+      document.querySelectorAll('[data-price-from]').forEach(el => {
+        el.textContent = pricing.low + '€'
+      })
+    }
     renderCalendar('calendar-grid', 'calendar-title')
 
     document.getElementById('prev-month')?.addEventListener('click', () => prevMonth('calendar-grid', 'calendar-title'))

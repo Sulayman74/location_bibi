@@ -4,11 +4,17 @@
  * Rendu du calendrier interactif pour index.html et reservation.html
  */
 
-import { FUNCTIONS_BASE_URL, PROPERTY_CONFIG, db } from './firebase-config.js';
+import { FUNCTIONS_BASE_URL, PROPERTY_CONFIG, db, getPricing } from './firebase-config.js';
 import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 
 // ==================== STATE ====================
 let bookedDates = new Set(); // ISO dates "YYYY-MM-DD"
+let _pricing    = null;
+
+export async function initPricing() {
+  _pricing = await getPricing()
+  return _pricing
+}
 let calendarState = {
   year: new Date().getFullYear(),
   month: new Date().getMonth(),
@@ -27,7 +33,16 @@ const FR_MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin',
  * Fetches blocked dates from our Cloud Function (which proxies Zodomus)
  * Falls back to Firestore cache if network is unavailable
  */
+const AVAILABILITY_CACHE_TTL = 30 * 60 * 1000; // 30 min
+
 export async function fetchAvailability() {
+  // Serve from localStorage cache if fresh (saves Cloud Function invocations)
+  const cached = JSON.parse(localStorage.getItem('villa_booked_dates') || 'null');
+  if (cached && Date.now() - cached.fetchedAt < AVAILABILITY_CACHE_TTL) {
+    bookedDates = new Set(cached.dates);
+    return bookedDates;
+  }
+
   try {
     if (!FUNCTIONS_BASE_URL) throw new Error('FUNCTIONS_BASE_URL not configured');
     const res = await fetch(`${FUNCTIONS_BASE_URL}/getAvailability`, {
@@ -37,7 +52,6 @@ export async function fetchAvailability() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     bookedDates = new Set(data.bookedDates || []);
-    // Cache in localStorage for offline access
     localStorage.setItem('villa_booked_dates', JSON.stringify({
       dates: [...bookedDates],
       fetchedAt: Date.now(),
@@ -205,8 +219,8 @@ export function updatePriceBreakdown() {
   const nights = nightsBetween(checkIn, checkOut);
   const nightly = getNightlyRate(new Date(checkIn));
   const subtotal = nights * nightly;
-  const cleaning = PROPERTY_CONFIG.cleaningFee;
-  const serviceFee = Math.round(subtotal * 0.05); // 5% service fee
+  const cleaning = _pricing?.cleaningFee ?? PROPERTY_CONFIG.cleaningFee;
+  const serviceFee = Math.round(subtotal * ((_pricing?.serviceFeePercent ?? PROPERTY_CONFIG.serviceFeePercent) / 100));
   const total = subtotal + cleaning + serviceFee;
 
   container.innerHTML = `
@@ -234,12 +248,14 @@ export function updatePriceBreakdown() {
 }
 
 function getNightlyRate(date) {
-  const month = date.getMonth(); // 0-indexed
-  // High season: June (5) – September (8)
-  if (month >= 5 && month <= 8) return PROPERTY_CONFIG.basePrice.high;
-  // School holidays approximation
-  if (month === 11 || month === 2) return PROPERTY_CONFIG.basePrice.school;
-  return PROPERTY_CONFIG.basePrice.low;
+  const month = date.getMonth();
+  const p = _pricing ?? PROPERTY_CONFIG.basePrice
+  const high   = _pricing ? p.high   : p.high
+  const school = _pricing ? p.school : p.school
+  const low    = _pricing ? p.low    : p.low
+  if (month >= 5 && month <= 8) return high;
+  if (month === 11 || month === 2) return school;
+  return low;
 }
 
 function nightsBetween(start, end) {

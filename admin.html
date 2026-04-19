@@ -90,6 +90,9 @@
           <button data-section="guests" class="admin-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-stone-700 hover:bg-stone-50">
             <span class="text-lg">👥</span> Voyageurs
           </button>
+          <button data-section="pricing" class="admin-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-stone-700 hover:bg-stone-50">
+            <span class="text-lg">💰</span> Tarifs
+          </button>
         </nav>
 
         <div class="px-3 pb-5">
@@ -139,6 +142,9 @@
             </button>
             <button data-section="guests" class="admin-nav-item-mobile w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-700">
               <span>👥</span> Voyageurs
+            </button>
+            <button data-section="pricing" class="admin-nav-item-mobile w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-700">
+              <span>💰</span> Tarifs
             </button>
           </nav>
           <div class="px-3 pb-5 border-t border-stone-100 mt-2 pt-4">
@@ -357,6 +363,92 @@
                 </table>
               </div>
               <div class="px-4 py-3 border-t border-stone-100 text-xs text-stone-400 text-right" id="guests-count"></div>
+            </div>
+          </section>
+
+          <!-- ====== SECTION: PRICING ====== -->
+          <section id="section-pricing" class="admin-section hidden">
+            <div class="mb-6">
+              <h1 class="font-serif text-2xl font-bold text-stone-800">Tarifs</h1>
+              <p class="text-stone-500 text-sm mt-1">Les modifications s'appliquent immédiatement sur le site et le formulaire de réservation.</p>
+            </div>
+
+            <div id="pricing-alert" class="hidden mb-5 rounded-xl p-4 text-sm font-medium"></div>
+
+            <!-- Season Cards -->
+            <div class="grid sm:grid-cols-3 gap-4 mb-6">
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+                <div class="text-2xl mb-2">🌸</div>
+                <div class="font-semibold text-stone-700 mb-0.5">Basse saison</div>
+                <div class="text-xs text-stone-400 mb-4">Oct → Mai (hors vacances)</div>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="price-low" min="1" max="9999"
+                    class="w-full border border-stone-200 rounded-xl px-3 py-2 text-lg font-bold text-stone-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 text-center"
+                    placeholder="45" />
+                  <span class="text-stone-400 font-medium">€/nuit</span>
+                </div>
+              </div>
+
+              <div class="bg-amber-500 rounded-2xl p-5 shadow-lg text-white relative">
+                <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-amber-700 text-white text-xs font-bold px-3 py-0.5 rounded-full">Populaire</div>
+                <div class="text-2xl mb-2">☀️</div>
+                <div class="font-semibold mb-0.5">Haute saison</div>
+                <div class="text-xs text-amber-200 mb-4">Juin → Septembre</div>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="price-high" min="1" max="9999"
+                    class="w-full border border-amber-300 bg-amber-400/30 rounded-xl px-3 py-2 text-lg font-bold text-white placeholder-amber-200 focus:outline-none focus:border-white focus:ring-2 focus:ring-white/30 text-center"
+                    placeholder="85" />
+                  <span class="text-amber-200 font-medium">€/nuit</span>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+                <div class="text-2xl mb-2">🎄</div>
+                <div class="font-semibold text-stone-700 mb-0.5">Vacances scolaires</div>
+                <div class="text-xs text-stone-400 mb-4">Noël (déc.) · Pâques (mars)</div>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="price-school" min="1" max="9999"
+                    class="w-full border border-stone-200 rounded-xl px-3 py-2 text-lg font-bold text-stone-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 text-center"
+                    placeholder="90" />
+                  <span class="text-stone-400 font-medium">€/nuit</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fees -->
+            <div class="grid sm:grid-cols-2 gap-4 mb-6">
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+                <div class="font-semibold text-stone-700 mb-1">🧹 Frais de ménage</div>
+                <div class="text-xs text-stone-400 mb-3">Montant fixe ajouté à chaque réservation</div>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="price-cleaning" min="0" max="9999"
+                    class="w-full border border-stone-200 rounded-xl px-3 py-2 text-lg font-bold text-stone-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 text-center" />
+                  <span class="text-stone-400 font-medium">€ / séjour</span>
+                </div>
+              </div>
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+                <div class="font-semibold text-stone-700 mb-1">⚙️ Frais de service</div>
+                <div class="text-xs text-stone-400 mb-3">Pourcentage appliqué sur le sous-total nuits</div>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="price-service" min="0" max="100" step="0.5"
+                    class="w-full border border-stone-200 rounded-xl px-3 py-2 text-lg font-bold text-stone-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 text-center" />
+                  <span class="text-stone-400 font-medium">%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="bg-stone-50 rounded-2xl p-5 border border-stone-200 mb-6">
+              <div class="text-sm font-semibold text-stone-600 mb-3">Aperçu — séjour 7 nuits en haute saison</div>
+              <div id="pricing-preview" class="space-y-1 text-sm text-stone-600"></div>
+            </div>
+
+            <div class="flex justify-end">
+              <button id="save-pricing-btn"
+                class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 py-3 rounded-xl transition shadow-lg">
+                <span id="save-pricing-spinner" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                <span id="save-pricing-text">Sauvegarder les tarifs</span>
+              </button>
             </div>
           </section>
 

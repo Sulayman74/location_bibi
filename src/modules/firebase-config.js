@@ -5,7 +5,7 @@
 import { getApps, initializeApp } from 'firebase/app'
 
 import { getAuth }                from 'firebase/auth'
-import { getFirestore }           from 'firebase/firestore'
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { getFunctions }           from 'firebase/functions'
 import { getStorage } from 'firebase/storage'
 
@@ -50,7 +50,50 @@ export const PROPERTY_CONFIG = {
   maxGuests:             8,
   basePrice:             { low: 45, high: 85, school: 90 },
   cleaningFee:           50,
+  serviceFeePercent:     5,
   currency:              'EUR',
   googlePlaceId:         import.meta.env.VITE_GOOGLE_PLACE_ID    || '',
   airbnbListingId:       import.meta.env.VITE_AIRBNB_LISTING_ID  || '',
+}
+
+// ==================== DYNAMIC PRICING ====================
+
+const PRICING_CACHE_KEY = 'villa_pricing'
+const PRICING_CACHE_TTL = 30 * 60 * 1000
+let _pricingCache = null
+
+export async function getPricing() {
+  if (_pricingCache) return _pricingCache
+
+  const cached = JSON.parse(localStorage.getItem(PRICING_CACHE_KEY) || 'null')
+  if (cached && Date.now() - cached.fetchedAt < PRICING_CACHE_TTL) {
+    _pricingCache = cached.data
+    return _pricingCache
+  }
+
+  try {
+    const snap = await getDoc(doc(db, 'config', 'pricing'))
+    if (snap.exists()) {
+      _pricingCache = snap.data()
+      localStorage.setItem(PRICING_CACHE_KEY, JSON.stringify({ data: _pricingCache, fetchedAt: Date.now() }))
+      return _pricingCache
+    }
+  } catch (e) {
+    console.warn('[pricing] Firestore failed, using defaults')
+  }
+
+  _pricingCache = {
+    low:               PROPERTY_CONFIG.basePrice.low,
+    high:              PROPERTY_CONFIG.basePrice.high,
+    school:            PROPERTY_CONFIG.basePrice.school,
+    cleaningFee:       PROPERTY_CONFIG.cleaningFee,
+    serviceFeePercent: PROPERTY_CONFIG.serviceFeePercent,
+  }
+  return _pricingCache
+}
+
+export async function savePricing(data) {
+  await setDoc(doc(db, 'config', 'pricing'), { ...data, updatedAt: serverTimestamp() })
+  _pricingCache = null
+  localStorage.removeItem(PRICING_CACHE_KEY)
 }

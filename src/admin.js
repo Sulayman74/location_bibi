@@ -20,7 +20,7 @@ import { isAdmin, onAuthChange, resetPassword, signIn, signOut } from './modules
 import { cancelBooking } from './modules/booking.js'
 
 import { initPageTransitions } from './modules/transitions.js'
-import { storage } from './modules/firebase-config.js';
+import { storage, getPricing, savePricing } from './modules/firebase-config.js';
 
 // ==================== BOOT ====================
 
@@ -220,6 +220,7 @@ async function navigateTo(section) {
     case 'reservations':  await loadReservationsSection() ; break
     case 'push':          await loadPushSection() ; break
     case 'guests':        await loadGuestsSection() ; break
+    case 'pricing':       await loadPricingSection() ; break
   }
 }
 
@@ -419,6 +420,100 @@ async function loadGuestsSection() {
   }
 
   document.getElementById('filter-subscribed')?.addEventListener('change', loadGuestsSection, { once: true })
+}
+
+// ==================== PRICING ====================
+
+async function loadPricingSection() {
+  const pricing = await getPricing()
+
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val }
+  set('price-low',      pricing.low)
+  set('price-high',     pricing.high)
+  set('price-school',   pricing.school)
+  set('price-cleaning', pricing.cleaningFee)
+  set('price-service',  pricing.serviceFeePercent)
+
+  updatePricingPreview(pricing)
+
+  // Live preview on input change
+  const inputs = ['price-low','price-high','price-school','price-cleaning','price-service']
+  inputs.forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => {
+      updatePricingPreview(getCurrentPricingValues())
+    })
+  })
+
+  document.getElementById('save-pricing-btn')?.addEventListener('click', savePricingHandler, { once: true })
+}
+
+function getCurrentPricingValues() {
+  const n = id => parseFloat(document.getElementById(id)?.value) || 0
+  return {
+    low:               n('price-low'),
+    high:              n('price-high'),
+    school:            n('price-school'),
+    cleaningFee:       n('price-cleaning'),
+    serviceFeePercent: n('price-service'),
+  }
+}
+
+function updatePricingPreview(p) {
+  const preview = document.getElementById('pricing-preview')
+  if (!preview) return
+  const nights   = 7
+  const subtotal = nights * p.high
+  const service  = Math.round(subtotal * (p.serviceFeePercent / 100))
+  const total    = subtotal + p.cleaningFee + service
+  preview.innerHTML = `
+    <div class="flex justify-between"><span>${p.high}€ × ${nights} nuits</span><span class="font-medium">${subtotal}€</span></div>
+    <div class="flex justify-between"><span>Frais de ménage</span><span class="font-medium">${p.cleaningFee}€</span></div>
+    <div class="flex justify-between"><span>Frais de service (${p.serviceFeePercent}%)</span><span class="font-medium">${service}€</span></div>
+    <div class="flex justify-between border-t border-stone-200 pt-2 mt-2 font-bold text-stone-800"><span>Total</span><span>${total}€</span></div>
+  `
+}
+
+async function savePricingHandler() {
+  const btn     = document.getElementById('save-pricing-btn')
+  const spinner = document.getElementById('save-pricing-spinner')
+  const btnText = document.getElementById('save-pricing-text')
+  const alert   = document.getElementById('pricing-alert')
+
+  const data = getCurrentPricingValues()
+  if (!data.low || !data.high || !data.school) {
+    showPricingAlert('Tous les tarifs par nuit sont obligatoires.', 'error')
+    btn?.addEventListener('click', savePricingHandler, { once: true })
+    return
+  }
+
+  btn.disabled = true
+  spinner?.classList.remove('hidden')
+  if (btnText) btnText.textContent = 'Sauvegarde…'
+
+  try {
+    await savePricing(data)
+    showPricingAlert('✅ Tarifs mis à jour. Les visiteurs verront les nouveaux prix dans 30 min.', 'success')
+  } catch (err) {
+    showPricingAlert(`❌ Erreur : ${err.message}`, 'error')
+  } finally {
+    btn.disabled = false
+    spinner?.classList.add('hidden')
+    if (btnText) btnText.textContent = 'Sauvegarder les tarifs'
+    btn?.addEventListener('click', savePricingHandler, { once: true })
+  }
+}
+
+function showPricingAlert(msg, type) {
+  const el = document.getElementById('pricing-alert')
+  if (!el) return
+  el.className = `mb-5 rounded-xl p-4 text-sm font-medium ${
+    type === 'success'
+      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+      : 'bg-red-50 text-red-700 border border-red-200'
+  }`
+  el.textContent = msg
+  el.classList.remove('hidden')
+  if (type === 'success') setTimeout(() => el.classList.add('hidden'), 5000)
 }
 
 // ==================== LOGOUT ====================
