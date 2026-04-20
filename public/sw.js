@@ -3,7 +3,7 @@
  * Stratégie: Cache-First pour assets statiques, Network-First pour données Firestore
  */
 
-const CACHE_VERSION = 'v1.0.3';
+const CACHE_VERSION = 'v1.0.4';
 const STATIC_CACHE = `villa-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `villa-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE  = `villa-images-${CACHE_VERSION}`;
