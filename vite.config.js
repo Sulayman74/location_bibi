@@ -1,9 +1,26 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import { readFileSync, writeFileSync, existsSync } from 'fs'
+
+function injectSwVersion() {
+  return {
+    name: 'inject-sw-version',
+    closeBundle() {
+      const swPath = resolve(__dirname, 'dist/sw.js')
+      if (!existsSync(swPath)) return
+      const version = `v${new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '.')}`
+      let sw = readFileSync(swPath, 'utf-8')
+      sw = sw.replace(/CACHE_VERSION\s*=\s*'[^']*'/, `CACHE_VERSION = '${version}'`)
+      writeFileSync(swPath, sw)
+      console.log(`\x1b[32m✓\x1b[0m SW cache version → ${version}`)
+    },
+  }
+}
 
 export default defineConfig({
   root: '.',
-  publicDir: 'public',  // sw.js, manifest.json, icons copiés tel quel dans dist/
+  publicDir: 'public',
+  plugins: [injectSwVersion()],
 
   build: {
     outDir: 'dist',

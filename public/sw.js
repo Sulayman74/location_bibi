@@ -3,7 +3,7 @@
  * Stratégie: Cache-First pour assets statiques, Network-First pour données Firestore
  */
 
-const CACHE_VERSION = 'v1.0.4';
+const CACHE_VERSION = 'v1.0.5';
 const STATIC_CACHE = `villa-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `villa-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE  = `villa-images-${CACHE_VERSION}`;
@@ -93,7 +93,19 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Stale-while-revalidate for app pages
+  // Network-first for HTML pages (navigation) — jamais de HTML périmé
+  if (request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  // Cache-first pour les assets hashés Vite (ex: main-abc123.js)
+  if (/\/assets\/.*\.[a-f0-9]{8,}\.(js|css)$/.test(url.pathname)) {
+    event.respondWith(cacheFirst(request, STATIC_CACHE));
+    return;
+  }
+
+  // Stale-while-revalidate pour tout le reste
   event.respondWith(staleWhileRevalidate(request));
 });
 
