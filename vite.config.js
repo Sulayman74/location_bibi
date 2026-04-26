@@ -2,9 +2,14 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const APP_VERSION = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '.')
+
 export default defineConfig({
   root: '.',
   publicDir: 'public',
+  define: {
+    __APP_VERSION__: JSON.stringify(`v${APP_VERSION}`),
+  },
   plugins: [
     VitePWA({
       strategies: 'injectManifest',
@@ -14,9 +19,15 @@ export default defineConfig({
       injectRegister: false,
       manifestFilename: 'manifest.json',
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,webp,svg,ico,woff,woff2}'],
+        // ⚠️ PAS de .html ici — sinon le précache écrase NetworkFirst et sert
+        // d'anciens HTML pointant vers des bundles supprimés.
+        globPatterns: ['**/*.{js,css,png,jpg,jpeg,webp,svg,ico,woff,woff2}'],
         globIgnores: ['**/screenshots/**'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        // offline.html reste précaché pour le fallback offline
+        additionalManifestEntries: [
+          { url: '/offline.html', revision: APP_VERSION },
+        ],
       },
       devOptions: { enabled: false, type: 'module' },
       manifest: {

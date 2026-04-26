@@ -14,6 +14,23 @@ let deferredInstallPrompt = null
 export function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return null
 
+  // Expose la version active — pratique pour diagnostiquer en prod
+  // (console.log + data-attribute sur body, inspectable dans DevTools)
+  console.log(`%c[App] ${__APP_VERSION__}`, 'color:#d97706;font-weight:bold')
+  document.body?.setAttribute('data-app-version', __APP_VERSION__)
+  window.__APP_VERSION__ = __APP_VERSION__
+
+  // Quand un nouveau SW prend le contrôle (skipWaiting + activate), recharger
+  // la page automatiquement — sinon l'onglet reste sur l'ancien JS en mémoire
+  // qui demande de vieux chemins de bundles supprimés.
+  let reloading = false
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloading) return
+    reloading = true
+    console.log('[PWA] New SW activated, reloading…')
+    window.location.reload()
+  })
+
   return registerSW({
     immediate: true,
     onRegisteredSW(_swUrl, reg) {

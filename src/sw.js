@@ -5,8 +5,11 @@ import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategi
 import { ExpirationPlugin } from 'workbox-expiration'
 import { CacheableResponsePlugin } from 'workbox-cacheable-response'
 
+// skipWaiting active immédiatement le nouveau SW dès qu'il est installé.
+// Le reload de la page est déclenché côté client par le listener
+// `controllerchange` dans pwa.js — surtout PAS de clients.claim() ici
+// (sinon race condition entre l'ancien JS en mémoire et le nouveau cache).
 self.skipWaiting()
-self.clients.claim()
 
 cleanupOutdatedCaches()
 precacheAndRoute(self.__WB_MANIFEST)
