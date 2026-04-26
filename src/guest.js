@@ -69,7 +69,9 @@ async function init() {
   renderGuestRecommendations('guest-recommendations')
 
   // 2. PWA init (non-blocking)
-  registerServiceWorker().catch(e => console.warn('SW init error:', e))
+  // registerServiceWorker retourne updateSW (une fonction du plugin), pas une Promise
+  // → les erreurs SW sont gérées via onRegisterError dans pwa.js
+  try { registerServiceWorker() } catch (e) { console.warn('SW init error:', e) }
   initForegroundMessaging().catch(e => console.warn('Messaging init error:', e))
 
   // 3. Résolution de la réservation
