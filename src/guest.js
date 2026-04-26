@@ -173,4 +173,17 @@ function initTabs() {
   })
 }
 
-init().catch(console.error)
+function hideSplash() {
+  const splash = document.getElementById('splash-screen')
+  if (!splash) return
+  splash.classList.add('hide')
+  setTimeout(() => splash.remove(), 500)
+}
+
+init()
+  .catch(console.error)
+  .finally(() => {
+    // Délai mini 400ms pour éviter le flash si init est instantanée
+    const minDelay = new Promise(r => setTimeout(r, 400))
+    minDelay.then(hideSplash)
+  })
