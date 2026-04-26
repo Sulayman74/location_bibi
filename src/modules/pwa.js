@@ -3,6 +3,7 @@
  * Service Worker registration, install prompt, push notifications
  */
 
+import { registerSW } from 'virtual:pwa-register'
 import { FCM_VAPID_KEY, db, getMessagingInstance } from './firebase-config.js'
 import { arrayUnion, doc, updateDoc } from 'firebase/firestore'
 
@@ -10,35 +11,22 @@ let deferredInstallPrompt = null
 
 // ==================== SERVICE WORKER ====================
 
-export async function registerServiceWorker() {
+export function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return null
 
-  try {
-    const reg = await navigator.serviceWorker.register('/sw.js', {
-      scope: '/',
-      updateViaCache: 'none',
-    })
-
-    reg.addEventListener('updatefound', () => {
-      const newWorker = reg.installing
-      newWorker?.addEventListener('statechange', () => {
-        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-          showUpdateBanner(newWorker)
-        }
-      })
-    })
-
-    if ('periodicSync' in reg) {
-      try {
-        await reg.periodicSync.register('sync-availability', { minInterval: 60 * 60 * 1000 })
-      } catch {}
-    }
-
-    return reg
-  } catch (err) {
-    console.error('[PWA] SW registration failed:', err)
-    return null
-  }
+  return registerSW({
+    immediate: true,
+    onRegisteredSW(_swUrl, reg) {
+      if (reg && 'periodicSync' in reg) {
+        reg.periodicSync
+          .register('sync-availability', { minInterval: 60 * 60 * 1000 })
+          .catch(() => {})
+      }
+    },
+    onRegisterError(err) {
+      console.error('[PWA] SW registration failed:', err)
+    },
+  })
 }
 
 // ==================== INSTALL PROMPT ====================
@@ -87,30 +75,6 @@ function showInstallBanner() {
 
 function hidePwaBanner() {
   document.getElementById('pwa-banner')?.classList.add('hidden')
-}
-
-function showUpdateBanner(newWorker) {
-  const banner = document.createElement('div')
-  banner.className = 'fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 bg-slate-800 text-white rounded-2xl shadow-2xl p-4'
-  banner.innerHTML = `
-    <div class="flex items-center justify-between gap-3">
-      <div>
-        <div class="font-semibold text-sm">Mise à jour disponible</div>
-        <div class="text-xs text-slate-300 mt-0.5">Rechargez pour la dernière version</div>
-      </div>
-      <button id="sw-update-btn" class="bg-amber-500 hover:bg-amber-400 text-white text-xs font-bold px-3 py-2 rounded-xl whitespace-nowrap transition">
-        Mettre à jour
-      </button>
-    </div>
-  `
-  document.body.appendChild(banner)
-  // Délégation sur le banner
-  banner.addEventListener('click', e => {
-    if (e.target.closest('#sw-update-btn')) {
-      newWorker.postMessage({ type: 'SKIP_WAITING' })
-      window.location.reload()
-    }
-  })
 }
 
 // ==================== PUSH NOTIFICATIONS ====================
