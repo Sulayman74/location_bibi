@@ -22,7 +22,11 @@ export default defineConfig({
         // ⚠️ PAS de .html ici — sinon le précache écrase NetworkFirst et sert
         // d'anciens HTML pointant vers des bundles supprimés.
         globPatterns: ['**/*.{js,css,png,jpg,jpeg,webp,svg,ico,woff,woff2}'],
-        globIgnores: ['**/screenshots/**'],
+        // ⚠️ Ignorer le dossier icons : les icônes du manifest sont déjà
+        // auto-précachées par vite-plugin-pwa avec une révision, et les autres
+        // favicons sont gérés par le HTTP cache (immutable dans firebase.json).
+        // Sans cet ignore → erreur "add-to-cache-list-conflicting-entries".
+        globIgnores: ['**/screenshots/**', '**/icons/**'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         // offline.html reste précaché pour le fallback offline
         additionalManifestEntries: [
