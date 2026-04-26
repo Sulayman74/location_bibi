@@ -5,58 +5,161 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hors ligne – La Cabine du Cap d'Agde</title>
   <meta name="theme-color" content="#d97706" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="/src/styles/main.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="/favicon.ico" sizes="any" />
   <style>
-    html { font-family: 'Inter', sans-serif; }
-    .wifi-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f5f5f4;
+      color: #292524;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+    header {
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f59e0b;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand { font-family: Georgia, 'Times New Roman', serif; font-weight: 600; }
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .container { text-align: center; max-width: 360px; width: 100%; }
+    .emoji { font-size: 56px; margin-bottom: 16px; }
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+    .lead {
+      color: #78716c;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 24px;
+    }
+    .wifi-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .wifi-label {
+      color: rgba(255,255,255,.6);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .wifi-ssid { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+    .wifi-password {
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    .wifi-cached {
+      font-size: 11px;
+      color: rgba(255,255,255,.4);
+      margin-top: 12px;
+    }
+    .no-wifi {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 14px;
+      color: #78716c;
+      margin-bottom: 20px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      background: #f59e0b;
+      color: #fff;
+      font-weight: 600;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn:hover, .btn:focus { background: #d97706; }
+    .home-link {
+      display: inline-block;
+      margin-top: 12px;
+      color: #d97706;
+      font-size: 14px;
+      text-decoration: underline;
+    }
+    .hidden { display: none; }
   </style>
 </head>
-<body class="bg-stone-100 text-stone-800 min-h-screen flex flex-col">
-  <header class="bg-white shadow-sm px-4 py-3 flex items-center gap-2">
-    <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-sm">KP</div>
-    <span class="font-serif font-semibold">La Cabine du Cap d'Agde</span>
+<body>
+  <header>
+    <div class="logo">KP</div>
+    <span class="brand">La Cabine du Cap d'Agde</span>
   </header>
 
-  <main class="flex-1 flex items-center justify-center px-4">
-    <div class="text-center max-w-sm">
-      <div class="text-6xl mb-5">📵</div>
-      <h1 class="font-serif text-2xl font-bold mb-3">Mode hors ligne</h1>
-      <p class="text-stone-500 mb-6 text-sm leading-relaxed">
+  <main>
+    <div class="container">
+      <div class="emoji">📵</div>
+      <h1>Mode hors ligne</h1>
+      <p class="lead">
         Vous n'êtes pas connecté à Internet. Le code WiFi est toujours disponible ci-dessous s'il a été chargé précédemment.
       </p>
 
-      <!-- Cached WiFi Code -->
-      <div id="cached-wifi" class="hidden wifi-card rounded-2xl p-5 text-white text-left mb-5">
-        <div class="text-white/60 text-xs uppercase tracking-wider mb-1">Réseau</div>
-        <div id="offline-ssid" class="font-semibold mb-3 text-base"></div>
-        <div class="text-white/60 text-xs uppercase tracking-wider mb-1">Mot de passe</div>
-        <div id="offline-password" class="font-mono text-xl font-bold tracking-widest"></div>
-        <div class="text-xs text-white/40 mt-3">(chargé en cache)</div>
+      <div id="cached-wifi" class="wifi-card hidden">
+        <div class="wifi-label">Réseau</div>
+        <div id="offline-ssid" class="wifi-ssid"></div>
+        <div class="wifi-label">Mot de passe</div>
+        <div id="offline-password" class="wifi-password"></div>
+        <div class="wifi-cached">(chargé en cache)</div>
       </div>
 
-      <div id="no-cached-wifi" class="bg-white rounded-2xl p-5 text-sm text-stone-500 mb-5">
+      <div id="no-cached-wifi" class="no-wifi">
         Le code WiFi n'est pas disponible hors ligne. Connectez-vous pour y accéder.
       </div>
 
-      <button onclick="window.location.reload()" class="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl transition w-full">
-        Réessayer la connexion
-      </button>
-      <a href="/" class="block mt-3 text-amber-600 text-sm underline">Retour à l'accueil</a>
+      <button class="btn" onclick="window.location.reload()">Réessayer la connexion</button>
+      <a href="/" class="home-link">Retour à l'accueil</a>
     </div>
   </main>
 
   <script>
-    // Try to load cached WiFi data
-    const wifi = JSON.parse(localStorage.getItem('villa_wifi') || 'null');
-    if (wifi && wifi.ssid && wifi.password) {
-      document.getElementById('cached-wifi').classList.remove('hidden');
-      document.getElementById('no-cached-wifi').classList.add('hidden');
-      document.getElementById('offline-ssid').textContent = wifi.ssid;
-      document.getElementById('offline-password').textContent = wifi.password;
-    }
+    try {
+      const wifi = JSON.parse(localStorage.getItem('villa_wifi') || 'null');
+      if (wifi && wifi.ssid && wifi.password) {
+        document.getElementById('cached-wifi').classList.remove('hidden');
+        document.getElementById('no-cached-wifi').classList.add('hidden');
+        document.getElementById('offline-ssid').textContent = wifi.ssid;
+        document.getElementById('offline-password').textContent = wifi.password;
+      }
+    } catch (e) {}
   </script>
 </body>
 </html>

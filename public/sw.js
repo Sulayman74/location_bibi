@@ -165,8 +165,8 @@ self.addEventListener('push', event => {
 
   const options = {
     body: data.body || '',
-    icon: '/assets/icons/icon-192.png',
-    badge: '/assets/icons/icon-96.png',
+    icon: '/assets/icons/favicon-192.png',
+    badge: '/assets/icons/favicon-96.png',
     tag: data.tag || 'villa-notification',
     renotify: true,
     requireInteraction: data.requireInteraction || false,
